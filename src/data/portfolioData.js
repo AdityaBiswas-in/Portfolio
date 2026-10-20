@@ -10,7 +10,7 @@ export const portfolioData = {
     email: "i.aditya.biswas@gmail.com",
     github: "https://github.com/AdityaBiswas-in",
     linkedin: "https://www.linkedin.com/in/iadityabiswas/",
-    twitter: "https://twitter.com",
+    twitter: "https://x.com/i_AdityaBiswas",
     instagram: "https://www.instagram.com/adityabiswas_/",
     bio1: "I am a passionate web developer bridging analytical computer science with intuitive, human-centered frontend architecture. Fascinated by how scalable web applications operate under the hood, I craft digital products with precision, artistic storytelling, and clean, resilient code.",
     bio2: "Rather than assembling repetitive generic blocks, I view code as a medium of craftsmanship. From designing reactive state flows to engineering performant database schemas, my work focuses on building meaningful, tactile interfaces that users truly enjoy navigating.",
