@@ -1,26 +1,54 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import {
+  distantMountainPath,
+  mainMassifPath,
+  mountainShadingLeft,
+  centerMountainShading,
+  mountainShadingRight,
+  centerSunlitFlank,
+  rightSunlitFlank,
+  leftPeakSnowHighlight,
+  leftPeakSnowShadow,
+  centerPeakSnow,
+  rightPeakSnow,
+  midgroundRidgePath,
+  backForestPath,
+  midForestPath,
+  fgForestPath,
+} from '../data/landscapePaths'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function CinematicBackground({ scrollProgress, currentTimeOfDay }) {
   const containerRef = useRef(null)
-  const skyRef = useRef(null)
+  const skySunsetRef = useRef(null)
+  const skyTwilightRef = useRef(null)
+  const skyNightRef = useRef(null)
+  const skyMoonlitRef = useRef(null)
+  const skyDawnRef = useRef(null)
   const sunRef = useRef(null)
   const moonRef = useRef(null)
   const starsRef = useRef(null)
   const cloudsRef = useRef(null)
   const mtnBackRef = useRef(null)
+  const mtnMoonlightRef = useRef(null)
   const mtnMidRef = useRef(null)
   const cabinGlowRef = useRef(null)
   const forestRef = useRef(null)
+  const forestMoonlightRef = useRef(null)
   const dawnGlowRef = useRef(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       // MASTER SCROLL-SCRUBBED TIMELINE
-      // Acts like a video scrub from Frame 0 (Sunset) to Frame End (Dawn)
+      // Continuous, rhythmic transition:
+      // 1. Sunrise/Sunset: colorful & warm
+      // 2. Sun sets down: colors softly dim
+      // 3. Sun totally down: pure black night sky & crisp stars
+      // 4. Moon arrives: silver moonlight gently returns visibility to mountains and forest
+      // 5. Dawn arrives: soft morning rose/gold horizon
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: document.body,
@@ -30,75 +58,122 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
         }
       })
 
-      // 1. SKY COLOR EVOLUTION (Sunset -> Twilight -> Midnight -> Deep Night -> Dawn)
-      tl.to(skyRef.current, {
-        background: 'linear-gradient(180deg, #3d1430 0%, #290e2b 35%, #180820 70%, #0d0412 100%)',
-        ease: 'none',
-        duration: 2,
-      }, 0) // Around Section 02 (About)
-      .to(skyRef.current, {
-        background: 'linear-gradient(180deg, #0b071c 0%, #120926 40%, #1c0a2a 75%, #080310 100%)',
-        ease: 'none',
-        duration: 3,
-      }, 2) // Section 03 & 04 (Projects & Education)
-      .to(skyRef.current, {
-        background: 'linear-gradient(180deg, #05040e 0%, #0c0822 45%, #150921 75%, #06020a 100%)',
-        ease: 'none',
-        duration: 3,
-      }, 5) // Section 05 & 06 (Skills & Certificates)
-      .to(skyRef.current, {
-        background: 'linear-gradient(180deg, #2b0e27 0%, #4a1532 40%, #7d263a 70%, #c4472c 95%, #120414 100%)',
-        ease: 'none',
-        duration: 2,
-      }, 8) // Section 07 (Contact - Dawn Arrival)
+      // 1. SKY OPACITY CROSS-FADE TIMELINE (Continuous GPU-interpolated cross-fades without gradient snapping)
+      // Layer A: Vibrant Sunset / Golden Hour (Hero) -> slowly dims as sun sets
+      tl.to(skySunsetRef.current, {
+        opacity: 0,
+        ease: 'power1.inOut',
+        duration: 2.2,
+      }, 1.2)
 
-      // 2. SUN SINKING BEHIND MOUNTAINS
+      // Layer B: Warm Twilight / Dusk (About Me) -> fades in, then fades into pure night
+      tl.fromTo(skyTwilightRef.current,
+        { opacity: 0 },
+        { opacity: 1, ease: 'power1.inOut', duration: 1.8 },
+        1.0
+      )
+      .to(skyTwilightRef.current, {
+        opacity: 0,
+        ease: 'power1.in',
+        duration: 1.4,
+      }, 2.8)
+
+      // Layer C: Pure Deep Black Midnight (Sun totally down around Projects)
+      tl.fromTo(skyNightRef.current,
+        { opacity: 0 },
+        { opacity: 1, ease: 'power1.inOut', duration: 1.4 },
+        2.8
+      )
+      .to(skyNightRef.current, {
+        opacity: 0.15,
+        ease: 'power1.out',
+        duration: 1.8,
+      }, 4.2)
+      .to(skyNightRef.current, {
+        opacity: 0,
+        ease: 'power1.in',
+        duration: 1.5,
+      }, 7.8)
+
+      // Layer D: Moonlit Indigo Sky (Moon arrives -> Visibility returns!)
+      tl.fromTo(skyMoonlitRef.current,
+        { opacity: 0 },
+        { opacity: 0.95, ease: 'power2.out', duration: 2.0 },
+        4.2
+      )
+      .to(skyMoonlitRef.current, {
+        opacity: 0,
+        ease: 'power1.in',
+        duration: 1.8,
+      }, 7.8)
+
+      // Layer E: Soft Morning Dawn (Contact)
+      tl.fromTo(skyDawnRef.current,
+        { opacity: 0 },
+        { opacity: 1, ease: 'power2.out', duration: 2.0 },
+        7.8
+      )
+
+      // 2. SUN SINKING BEHIND MOUNTAINS (Gradual, natural sunset)
       tl.to(sunRef.current, {
         y: '180%',
         scale: 0.65,
         opacity: 0,
         ease: 'power1.in',
-        duration: 2.5,
+        duration: 2.8,
       }, 0)
 
-      // 3. STARS & CONSTELLATIONS FADING IN (Midnight)
+      // 3. STARS & CONSTELLATIONS FADING IN (Sparkles brightly in the black night sky)
       tl.fromTo(starsRef.current, 
         { opacity: 0 },
-        { opacity: 1, ease: 'none', duration: 3 }, 
-        1.2
+        { opacity: 1, ease: 'none', duration: 1.8 }, 
+        2.6
       )
       .to(starsRef.current, {
         opacity: 0.85,
         ease: 'none',
-        duration: 4,
-      }, 4.2)
+        duration: 4.2,
+      }, 4.4)
       .to(starsRef.current, {
         opacity: 0,
         ease: 'power2.in',
-        duration: 1.8,
-      }, 8.2) // Stars fade as dawn breaks
+        duration: 1.6,
+      }, 8.0)
 
       // 4. MOON RISING OVER THE MOUNTAIN APEX
+      // "After that moon is arrives, then little visible... again little by little the visibility is gonna come"
       tl.fromTo(moonRef.current,
         { y: '160%', opacity: 0, scale: 0.7 },
-        { y: '0%', opacity: 1, scale: 1, duration: 2.8, ease: 'power2.out' },
-        3.5
+        { y: '0%', opacity: 1, scale: 1, duration: 2.4, ease: 'power2.out' },
+        4.0
       )
       .to(moonRef.current, {
         y: '-40%',
-        opacity: 0.4,
-        duration: 2.8,
+        opacity: 0.65,
+        duration: 2.4,
         ease: 'none',
-      }, 6.3)
+      }, 6.4)
       .to(moonRef.current, {
         y: '-80%',
         opacity: 0,
-        duration: 1.5,
+        duration: 1.4,
         ease: 'power1.in',
-      }, 8.5)
+      }, 8.2)
 
+      // 5. MOONLIGHT ILLUMINATION ON MOUNTAIN CRESTS & PINES
+      // As the moon arrives, silver moonlight illuminates the peaks, snow, and needle boughs
+      tl.fromTo([mtnMoonlightRef.current, forestMoonlightRef.current],
+        { opacity: 0 },
+        { opacity: 0.85, ease: 'power2.out', duration: 2.0 },
+        4.2
+      )
+      .to([mtnMoonlightRef.current, forestMoonlightRef.current], {
+        opacity: 0,
+        ease: 'power1.in',
+        duration: 1.6,
+      }, 7.8)
 
-      // 6. CLOUDS DISSOLVING IN TWILIGHT (No horizontal sliding across right-hand side)
+      // 6. CLOUDS DISSOLVING IN TWILIGHT
       tl.to(cloudsRef.current, {
         opacity: 0,
         ease: 'power1.out',
@@ -109,16 +184,16 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
       tl.fromTo(cabinGlowRef.current,
         { opacity: 0, scale: 0.8 },
         { opacity: 0.9, scale: 1, duration: 1.5, ease: 'power2.out' },
-        1.5
+        1.8
       )
       .to(cabinGlowRef.current, {
         opacity: 0.85,
         duration: 4.5,
         ease: 'none',
-      }, 3.0)
+      }, 3.3)
       .to(cabinGlowRef.current, {
-        opacity: 0.2,
-        duration: 2,
+        opacity: 0.15,
+        duration: 1.8,
         ease: 'power1.in',
       }, 7.8)
 
@@ -126,13 +201,46 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
       tl.fromTo(dawnGlowRef.current,
         { opacity: 0, scaleY: 0.3 },
         { opacity: 0.95, scaleY: 1, duration: 1.8, ease: 'power2.out' },
-        8.2
+        8.0
       )
 
       // 9. SUBTLE PARALLAX ON MOUNTAINS & FOREST
       tl.to(mtnBackRef.current, { y: 60, ease: 'none', duration: 10 }, 0)
       tl.to(mtnMidRef.current, { y: 30, ease: 'none', duration: 10 }, 0)
       tl.to(forestRef.current, { y: 12, ease: 'none', duration: 10 }, 0)
+
+      // 10. REALISTIC DAY-TO-NIGHT RHYTHM ON MOUNTAINS & FOREST
+      // 0.0 - 1.2: Vibrant colorful sunset
+      // 1.2 - 2.8: "Little by little sun was setting down, the color dims"
+      tl.to([mtnBackRef.current, mtnMidRef.current, forestRef.current], {
+        filter: 'brightness(0.7) saturate(0.85) hue-rotate(-8deg)',
+        ease: 'power1.inOut',
+        duration: 1.8,
+      }, 1.2)
+      // 2.8 - 4.0: "And then when the sun is totally down, then the color should be black"
+      .to([mtnBackRef.current, mtnMidRef.current, forestRef.current], {
+        filter: 'brightness(0.2) saturate(0.35) hue-rotate(-18deg)',
+        ease: 'power1.inOut',
+        duration: 1.2,
+      }, 2.8)
+      // 4.0 - 6.2: "After that moon is arrives, then little visible... again little by little the visibility is gonna come"
+      .to([mtnBackRef.current, mtnMidRef.current, forestRef.current], {
+        filter: 'brightness(0.78) saturate(0.92) hue-rotate(-32deg)',
+        ease: 'power2.out',
+        duration: 2.2,
+      }, 4.0)
+      // 6.2 - 7.8: Moonlit visibility holds steady through the night
+      .to([mtnBackRef.current, mtnMidRef.current, forestRef.current], {
+        filter: 'brightness(0.74) saturate(0.9) hue-rotate(-30deg)',
+        ease: 'none',
+        duration: 1.6,
+      }, 6.2)
+      // 7.8 - 9.8: Dawn awakens with morning warmth
+      .to([mtnBackRef.current, mtnMidRef.current, forestRef.current], {
+        filter: 'brightness(0.98) saturate(1.08) hue-rotate(5deg)',
+        ease: 'power1.out',
+        duration: 2.0,
+      }, 7.8)
 
       // All elements are strictly synchronized with the master scroll timeline (tl).
       // When scroll stops, all frames freeze completely with zero autonomous drift.
@@ -147,15 +255,58 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
       className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden select-none"
       style={{ willChange: 'transform' }}
     >
-      {/* 1. Dynamic Cinematic Sky Canvas */}
-      <div
-        ref={skyRef}
-        className="absolute inset-0 w-full h-full transition-colors duration-300"
-        style={{
-          background: 'linear-gradient(180deg, #d85735 0%, #cf4d2c 45%, #7a2638 85%, #18091a 100%)',
-          willChange: 'background',
-        }}
-      />
+      {/* 1. Dynamic Cinematic Sky Canvas (Layered Opacity Cross-Fades for Smooth Continuous Rhythm) */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none">
+        {/* Layer A: Vibrant Sunset / Golden Hour (Hero) */}
+        <div
+          ref={skySunsetRef}
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: 'linear-gradient(180deg, #d85735 0%, #cf4d2c 45%, #7a2638 85%, #18091a 100%)',
+            willChange: 'opacity',
+          }}
+        />
+
+        {/* Layer B: Warm Twilight / Dusk (About Me - Little by little sun sets, color dims) */}
+        <div
+          ref={skyTwilightRef}
+          className="absolute inset-0 w-full h-full opacity-0"
+          style={{
+            background: 'linear-gradient(180deg, #441635 0%, #300e2e 40%, #1a0822 75%, #0e0314 100%)',
+            willChange: 'opacity',
+          }}
+        />
+
+        {/* Layer C: Pure Deep Black Midnight (Sun Totally Down - Projects start) */}
+        <div
+          ref={skyNightRef}
+          className="absolute inset-0 w-full h-full opacity-0"
+          style={{
+            background: 'linear-gradient(180deg, #090514 0%, #06030e 50%, #020108 100%)',
+            willChange: 'opacity',
+          }}
+        />
+
+        {/* Layer D: Moonlit Indigo Sky (Moon Arrives - Visibility Returns) */}
+        <div
+          ref={skyMoonlitRef}
+          className="absolute inset-0 w-full h-full opacity-0"
+          style={{
+            background: 'radial-gradient(ellipse at 25% 25%, rgba(67, 56, 202, 0.3) 0%, transparent 60%), linear-gradient(180deg, #0d102e 0%, #100b26 45%, #05020e 100%)',
+            willChange: 'opacity',
+          }}
+        />
+
+        {/* Layer E: Soft Morning Dawn (Contact) */}
+        <div
+          ref={skyDawnRef}
+          className="absolute inset-0 w-full h-full opacity-0"
+          style={{
+            background: 'linear-gradient(180deg, #2b0e27 0%, #4a1532 40%, #7d263a 70%, #c4472c 95%, #120414 100%)',
+            willChange: 'opacity',
+          }}
+        />
+      </div>
 
       {/* 2. Starfield & Cosmic Nebula (Revealed in Deep Sections) */}
       <div
@@ -395,7 +546,7 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
         ))}
       </div>
 
-      {/* 8. Majestic Distant Alpine Mountain Peaks with Textured Ridges and Snowcaps */}
+      {/* 8. Majestic Distant Alpine Mountain Peaks with Textured Ridges and Realistic Snow Couloirs */}
       <div ref={mtnBackRef} className="absolute inset-x-0 bottom-0 h-[72%] w-full">
         <svg
           className="w-full h-full object-cover"
@@ -403,81 +554,166 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
           viewBox="0 0 1440 680"
         >
           <defs>
+            {/* Distant Hazy Range Gradient */}
+            <linearGradient id="mtn-distant-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#cf4e36" stopOpacity="0.85" />
+              <stop offset="35%" stopColor="#a32e42" stopOpacity="0.9" />
+              <stop offset="70%" stopColor="#671634" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#2c081e" stopOpacity="1" />
+            </linearGradient>
+
+            {/* Main Massif Base Gradient */}
             <linearGradient id="cinematic-mtn-back" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#e45938" />
-              <stop offset="25%" stopColor="#bf3f34" />
-              <stop offset="60%" stopColor="#802133" />
-              <stop offset="100%" stopColor="#3c0e22" />
+              <stop offset="0%" stopColor="#df5736" />
+              <stop offset="20%" stopColor="#be3d35" />
+              <stop offset="55%" stopColor="#7a1e35" />
+              <stop offset="85%" stopColor="#430c26" />
+              <stop offset="100%" stopColor="#1e0415" />
             </linearGradient>
+
+            {/* Shadow Flank (West Facing Face - Rich twilight plum) */}
             <linearGradient id="mtn-shading-left" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#f58055" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#330b1c" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#4f122e" stopOpacity="0.85" />
+              <stop offset="50%" stopColor="#2e071c" stopOpacity="0.92" />
+              <stop offset="100%" stopColor="#180310" stopOpacity="0.98" />
             </linearGradient>
+
+            {/* Center Massif Shadow */}
+            <linearGradient id="center-mtn-shadow" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#5c1535" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="#240517" stopOpacity="0.9" />
+            </linearGradient>
+
+            {/* Sunlit Flanks (East Facing Face - Warm Sunset Light) */}
             <linearGradient id="mtn-shading-right" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#ff946b" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#4d1228" stopOpacity="0.9" />
+              <stop offset="0%" stopColor="#ff946b" stopOpacity="0.75" />
+              <stop offset="40%" stopColor="#e8613d" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#4d1228" stopOpacity="0.85" />
             </linearGradient>
+
+            {/* Right Peak Direct Sunset Illumination */}
+            <linearGradient id="mtn-sun-direct" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffb38a" stopOpacity="0.85" />
+              <stop offset="50%" stopColor="#f36c46" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#55122b" stopOpacity="0.9" />
+            </linearGradient>
+
+            {/* Realistic Snow Highlight (Golden-white summit reflection) */}
             <linearGradient id="snow-crest" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#ffffff" />
-              <stop offset="70%" stopColor="#ffeedd" />
-              <stop offset="100%" stopColor="#f5cbb1" />
+              <stop offset="45%" stopColor="#fff3e6" />
+              <stop offset="85%" stopColor="#fed3bb" />
+              <stop offset="100%" stopColor="#e39885" />
+            </linearGradient>
+
+            {/* Realistic Snow Shadow (Cool atmospheric lavender) */}
+            <linearGradient id="snow-shadow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f0c2cf" />
+              <stop offset="50%" stopColor="#ca7a92" />
+              <stop offset="100%" stopColor="#7e2844" />
+            </linearGradient>
+
+            {/* Valley Mist Overlay */}
+            <linearGradient id="valley-mist" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffb094" stopOpacity="0" />
+              <stop offset="50%" stopColor="#f48666" stopOpacity="0.32" />
+              <stop offset="100%" stopColor="#1a0414" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Ethereal Moonlight Mountain Wash */}
+            <linearGradient id="mtn-moonlight-wash" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#c7d2fe" stopOpacity="0.55" />
+              <stop offset="35%" stopColor="#818cf8" stopOpacity="0.38" />
+              <stop offset="70%" stopColor="#4338ca" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="#1e1b4b" stopOpacity="0.75" />
             </linearGradient>
           </defs>
 
-          {/* Majestic Mountain Massif */}
+          {/* 1. Distant Atmospheric Mountain Range */}
           <path
-            d="M -50,680 
-               L -50,340 
-               L 80,240 
-               L 180,120 
-               L 260,220 
-               L 410,360 
-               L 560,280 
-               L 730,170 
-               L 880,310 
-               L 1040,220 
-               L 1190,320 
-               L 1350,190 
-               L 1500,290 
-               L 1500,680 Z"
+            d={distantMountainPath}
+            fill="url(#mtn-distant-grad)"
+            opacity="0.75"
+          />
+
+          {/* 2. Main Grand Massif Base Profile */}
+          <path
+            d={mainMassifPath}
             fill="url(#cinematic-mtn-back)"
           />
 
-          {/* Mountain Ridge Facet Shadow (Left Peak) */}
+          {/* Ethereal Silver-Indigo Moonlight Wash (Fades in as Moon Arrives) */}
           <path
-            d="M 180,120 L 110,270 L 260,220 Z"
-            fill="url(#mtn-shading-left)"
-          />
-          {/* Mountain Ridge Facet Light (Center Peak) */}
-          <path
-            d="M 730,170 L 620,320 L 880,310 Z"
-            fill="url(#mtn-shading-right)"
-            opacity="0.65"
-          />
-          {/* Mountain Ridge Facet Light (Right Peak) */}
-          <path
-            d="M 1350,190 L 1240,340 L 1500,290 Z"
-            fill="url(#mtn-shading-right)"
-            opacity="0.5"
+            ref={mtnMoonlightRef}
+            d={mainMassifPath}
+            fill="url(#mtn-moonlight-wash)"
+            opacity="0"
           />
 
-          {/* Crisp Multi-Faceted Snowcap on Grand Left Summit */}
-          <polygon
-            points="180,120 145,175 165,162 180,185 200,165 220,180 180,120"
-            fill="url(#snow-crest)"
-            filter="drop-shadow(0 2px 8px rgba(0,0,0,0.2))"
+          {/* 3. Shadow Facets on Left Peak (Mount Sentinel) */}
+          <path
+            d={mountainShadingLeft}
+            fill="url(#mtn-shading-left)"
           />
-          {/* Snowcap on Grand Center Summit */}
-          <polygon
-            points="730,170 700,215 720,205 735,225 750,208 765,220 730,170"
-            fill="url(#snow-crest)"
+
+          {/* 4. Center Massif Shadow Facet */}
+          <path
+            d={centerMountainShading}
+            fill="url(#center-mtn-shadow)"
+          />
+
+          {/* 5. Sunlit Rocky Flanks */}
+          <path
+            d={mountainShadingRight}
+            fill="url(#mtn-shading-right)"
+          />
+
+          {/* 6. Center Peak Sunlit Flank */}
+          <path
+            d={centerSunlitFlank}
+            fill="url(#mtn-shading-right)"
+            opacity="0.85"
+          />
+
+          {/* 7. Right Peak Direct Sunset Illumination */}
+          <path
+            d={rightSunlitFlank}
+            fill="url(#mtn-sun-direct)"
+          />
+
+          {/* 8. Realistic Glacial Snowpack & Avalanche Couloirs */}
+          <path
+            d={leftPeakSnowShadow}
+            fill="url(#snow-shadow)"
             opacity="0.9"
           />
-          {/* Snowcap on Far Right Summit */}
-          <polygon
-            points="1350,190 1325,230 1340,222 1352,238 1368,225 1380,235 1350,190"
+          <path
+            d={leftPeakSnowHighlight}
             fill="url(#snow-crest)"
-            opacity="0.85"
+            filter="drop-shadow(0 2px 8px rgba(0,0,0,0.25))"
+          />
+
+          <path
+            d={centerPeakSnow}
+            fill="url(#snow-crest)"
+            opacity="0.92"
+            filter="drop-shadow(0 2px 6px rgba(0,0,0,0.2))"
+          />
+
+          <path
+            d={rightPeakSnow}
+            fill="url(#snow-crest)"
+            opacity="0.95"
+            filter="drop-shadow(0 2px 6px rgba(0,0,0,0.18))"
+          />
+
+          {/* 9. Valley Atmospheric Mist Ribbon */}
+          <rect
+            x="-50"
+            y="380"
+            width="1550"
+            height="200"
+            fill="url(#valley-mist)"
           />
         </svg>
       </div>
@@ -492,38 +728,42 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
           <defs>
             <linearGradient id="cinematic-mtn-mid" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#96293f" />
-              <stop offset="45%" stopColor="#671932" />
-              <stop offset="100%" stopColor="#2c091f" />
+              <stop offset="30%" stopColor="#7a1f38" />
+              <stop offset="65%" stopColor="#4f1128" />
+              <stop offset="100%" stopColor="#1e0417" />
             </linearGradient>
             <linearGradient id="ridge-rim" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ff9a70" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#ff9a70" stopOpacity="0" />
+              <stop offset="0%" stopColor="#ffaa85" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#ffaa85" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="mid-valley-mist" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ff9a78" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#1c0517" stopOpacity="0" />
             </linearGradient>
           </defs>
 
-          {/* Organic Layered Ridges */}
+          {/* Organic Layered Foothill Ridge */}
           <path
-            d="M -50,540 
-               L -50,260 
-               Q 140,210 320,270 
-               T 720,210 
-               T 1120,250 
-               T 1500,180 
-               L 1500,540 Z"
+            d={midgroundRidgePath}
             fill="url(#cinematic-mtn-mid)"
             opacity="0.98"
           />
 
-          {/* Rim Light on Ridge Crests */}
+          {/* Golden Rim Light on Ridge Crest */}
           <path
-            d="M -50,260 
-               Q 140,210 320,270 
-               T 720,210 
-               T 1120,250 
-               T 1500,180"
+            d="M -50,260 Q 120,210 280,260 T 680,205 T 1080,240 T 1500,180"
             stroke="url(#ridge-rim)"
-            strokeWidth="3"
+            strokeWidth="3.5"
             fill="none"
+          />
+
+          {/* Soft Mist in Foothill Hollow */}
+          <rect
+            x="-50"
+            y="320"
+            width="1550"
+            height="160"
+            fill="url(#mid-valley-mist)"
           />
         </svg>
 
@@ -547,83 +787,108 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
           viewBox="0 0 1440 420"
         >
           <defs>
+            {/* Distant Forest Ridge Gradient */}
             <linearGradient id="forest-deep-back" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3d142d" />
-              <stop offset="100%" stopColor="#19061a" />
+              <stop offset="0%" stopColor="#451433" />
+              <stop offset="40%" stopColor="#2e0c24" />
+              <stop offset="100%" stopColor="#140316" />
             </linearGradient>
+
+            {/* Mid Forest Layer Gradient */}
             <linearGradient id="forest-mid-layer" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#290b20" />
-              <stop offset="100%" stopColor="#110313" />
+              <stop offset="0%" stopColor="#2c0922" />
+              <stop offset="45%" stopColor="#1b0517" />
+              <stop offset="100%" stopColor="#0c010d" />
             </linearGradient>
+
+            {/* Foreground Hero Pine Layer Gradient */}
             <linearGradient id="forest-front-layer" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1c0618" />
-              <stop offset="100%" stopColor="#08010a" />
+              <stop offset="0%" stopColor="#1c0519" />
+              <stop offset="35%" stopColor="#120313" />
+              <stop offset="100%" stopColor="#060008" />
+            </linearGradient>
+
+            {/* Sunset Rim Light on Foreground Pines */}
+            <linearGradient id="pine-needle-rim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffaa85" stopOpacity="0.4" />
+              <stop offset="40%" stopColor="#ea653e" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Forest Ground Mist Ribbon */}
+            <linearGradient id="forest-ground-mist" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#f58055" stopOpacity="0" />
+              <stop offset="50%" stopColor="#ffd2ba" stopOpacity="0.16" />
+              <stop offset="100%" stopColor="#08010a" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Ethereal Silver Moonlight Pine Needle Rim */}
+            <linearGradient id="pine-moonlight-rim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#c7d2fe" stopOpacity="0.85" />
+              <stop offset="45%" stopColor="#818cf8" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0" />
             </linearGradient>
           </defs>
 
-          {/* Natural Varied Conifer Canopy - Back Depth (Gentle wind sway) */}
+          {/* 1. Distant High-Density Pine Skyline (Gentle Wind Sway) */}
           <path
             className="animate-tree-sway-back"
-            d="M 0,420 L 0,165 
-               C 15,145 25,120 35,100 C 45,120 55,145 70,165 
-               C 85,150 95,130 105,115 C 115,130 125,155 140,170 
-               C 155,140 170,105 185,85  C 200,110 215,145 230,175 
-               C 245,155 255,135 268,118 C 280,138 295,160 310,180 
-               C 325,145 340,100 355,75  C 370,105 385,150 400,182 
-               C 415,160 428,138 440,120 C 452,142 468,168 485,185 
-               C 500,150 515,110 530,90  C 545,115 560,152 575,180 
-               C 590,160 605,140 618,125 C 630,145 645,168 660,185 
-               C 675,148 690,102 705,78  C 720,108 735,150 750,182 
-               C 765,162 778,140 790,122 C 802,145 818,170 835,188 
-               C 850,152 865,112 880,92  C 895,118 910,155 925,182 
-               C 940,162 955,142 968,126 C 980,146 995,170 1010,188 
-               C 1025,150 1040,105 1055,80 C 1070,110 1085,152 1100,185 
-               C 1115,162 1128,140 1140,122 C 1152,145 1168,170 1185,188 
-               C 1200,152 1215,112 1230,90  C 1245,118 1260,155 1275,182 
-               C 1290,162 1305,138 1320,118 C 1335,140 1350,168 1365,185 
-               C 1380,155 1395,120 1410,95  C 1425,125 1435,155 1440,175 
-               L 1440,420 Z"
+            d={backForestPath}
             fill="url(#forest-deep-back)"
-            opacity="0.85"
+            opacity="0.88"
           />
 
-          {/* Natural Conifer Canopy - Mid Layer */}
+          {/* 2. Soft Valley Mist Weaving Between Forest Layers */}
+          <rect
+            x="-50"
+            y="260"
+            width="1550"
+            height="90"
+            fill="url(#forest-ground-mist)"
+          />
+
+          {/* 3. Midground Realistic Fir & Spruce Stands */}
           <path
-            d="M 0,420 L 0,195 
-               C 20,175 35,150 48,135 C 60,155 75,180 92,205 
-               C 110,185 125,160 140,145 C 155,165 170,190 190,215 
-               C 210,175 225,135 240,115 C 255,140 270,185 290,218 
-               C 310,195 325,170 340,152 C 355,172 370,200 390,222 
-               C 410,180 425,140 440,118 C 455,145 470,190 490,220 
-               C 510,195 525,170 540,152 C 555,175 570,202 590,225 
-               C 610,178 625,136 640,115 C 655,142 670,188 690,220 
-               C 710,195 725,170 740,152 C 755,175 770,205 790,228 
-               C 810,182 825,140 840,118 C 855,145 870,190 890,222 
-               C 910,198 925,172 940,154 C 955,176 970,205 990,228 
-               C 1010,180 1025,138 1040,116 C 1055,144 1070,190 1090,222 
-               C 1110,198 1125,172 1140,155 C 1155,178 1170,206 1190,230 
-               C 1210,182 1225,140 1240,118 C 1255,146 1270,192 1290,224 
-               C 1310,198 1325,170 1340,152 C 1355,175 1370,205 1390,228 
-               C 1410,190 1425,160 1440,140 L 1440,420 Z"
+            d={midForestPath}
             fill="url(#forest-mid-layer)"
-            opacity="0.95"
+            opacity="0.96"
           />
 
-          {/* Foreground Crisp Pine Silhouettes with Individual Needle Boughs (Front wind sway) */}
+          {/* 4. Foreground Majestic Pines with Tiered Boughs & Needles (Front Wind Sway) */}
           <path
             className="animate-tree-sway-front"
-            d="M 0,420 L 0,230 
-               L 18,195 L 36,245 L 55,185 L 75,248 L 95,200 L 115,255 
-               L 138,180 L 162,250 L 185,190 L 210,260 L 235,175 L 260,252 
-               L 285,198 L 310,265 L 335,170 L 362,255 L 388,195 L 415,268 
-               L 442,165 L 470,258 L 498,190 L 525,270 L 552,175 L 580,262 
-               L 608,198 L 635,272 L 662,168 L 690,258 L 718,192 L 745,270 
-               L 772,172 L 800,265 L 828,195 L 855,272 L 882,165 L 910,260 
-               L 938,190 L 965,272 L 992,170 L 1020,262 L 1048,195 L 1075,275 
-               L 1102,168 L 1130,260 L 1158,192 L 1185,272 L 1212,175 L 1240,265 
-               L 1268,195 L 1295,275 L 1322,170 L 1350,262 L 1378,192 L 1408,270 
-               L 1440,185 L 1440,420 Z"
+            d={fgForestPath}
             fill="url(#forest-front-layer)"
+          />
+
+          {/* 5. Warm Sunset Needle Rim-Light on Foreground Pines */}
+          <path
+            className="animate-tree-sway-front"
+            d={fgForestPath}
+            stroke="url(#pine-needle-rim)"
+            strokeWidth="1.2"
+            fill="none"
+            opacity="0.75"
+          />
+
+          {/* 6. Silver Moonlight Needle Rim on Foreground Pines (Fades in as Moon Arrives) */}
+          <path
+            ref={forestMoonlightRef}
+            className="animate-tree-sway-front"
+            d={fgForestPath}
+            stroke="url(#pine-moonlight-rim)"
+            strokeWidth="1.6"
+            fill="none"
+            opacity="0"
+          />
+
+          {/* 6. Solid Forest Floor Anchor */}
+          <rect
+            x="-50"
+            y="410"
+            width="1550"
+            height="20"
+            fill="#060008"
           />
         </svg>
       </div>
