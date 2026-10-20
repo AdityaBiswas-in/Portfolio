@@ -15,16 +15,18 @@ export default function Skills() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.skill-category-card',
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          stagger: 0.2,
+          stagger: 0.15,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: cardsRef.current,
             start: 'top 80%',
+            once: true,
           }
         }
       )

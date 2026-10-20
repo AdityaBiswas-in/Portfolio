@@ -18,30 +18,34 @@ export default function About({ onViewToolbox }) {
       // Reveal animations for About section
       gsap.fromTo(
         leftColRef.current,
-        { opacity: 0, x: -50 },
+        { opacity: 0, x: -40 },
         {
           opacity: 1,
           x: 0,
-          duration: 1,
+          duration: 0.9,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 75%',
+            start: 'top 80%',
+            once: true,
           }
         }
       )
 
       gsap.fromTo(
         rightColRef.current,
-        { opacity: 0, x: 50 },
+        { opacity: 0, x: 40 },
         {
           opacity: 1,
           x: 0,
-          duration: 1,
+          duration: 0.9,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: sectionRef.current,
-            start: 'top 75%',
+            start: 'top 80%',
+            once: true,
           }
         }
       )
@@ -86,9 +90,9 @@ export default function About({ onViewToolbox }) {
             <p>
               I am a{' '}
               <strong className="text-white font-semibold underline decoration-[#e6613b]/60 underline-offset-4">
-                Bachelor of Computer Applications (BCA)
+                Web Developer
               </strong>{' '}
-              student bridging analytical computer science with intuitive, human-centered
+              bridging analytical computer science with intuitive, human-centered
               frontend architecture. Fascinated by how scalable web applications operate under the
               hood, I craft digital products with precision, artistic storytelling, and clean,
               resilient code.
@@ -212,7 +216,7 @@ export default function About({ onViewToolbox }) {
 
                   <div className="pl-4 flex items-center gap-2">
                     <span className="text-[#f38a58]">role:</span>
-                    <span className="text-[#34d399]">&apos;Full-Stack Architect&apos;</span>,
+                    <span className="text-[#34d399]">&apos;Web Developer&apos;</span>,
                   </div>
 
                   <div className="pl-4 flex items-center gap-2">

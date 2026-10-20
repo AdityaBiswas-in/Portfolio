@@ -14,16 +14,18 @@ export default function Education() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.edu-card',
-        { opacity: 0, x: -40 },
+        { opacity: 0, x: -30 },
         {
           opacity: 1,
           x: 0,
           duration: 0.8,
-          stagger: 0.2,
+          stagger: 0.15,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: timelineRef.current,
             start: 'top 80%',
+            once: true,
           }
         }
       )

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Menu, X, LayoutGrid, Sparkles } from 'lucide-react'
 
 export default function Navbar({ activeSection, onNavigate, onOpenIndex }) {
   const [scrolled, setScrolled] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const timeoutRef = useRef(null)
 
   const navItems = [
     { id: 'home', label: 'Home' },
@@ -15,6 +17,8 @@ export default function Navbar({ activeSection, onNavigate, onOpenIndex }) {
     { id: 'contact', label: 'Contact' },
   ]
 
+  const currentItem = navItems.find((item) => item.id === activeSection) || navItems[0]
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 40)
@@ -23,87 +27,101 @@ export default function Navbar({ activeSection, onNavigate, onOpenIndex }) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setIsHovered(true)
+  }
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(false)
+    }, 600)
+  }
+
   const handleItemClick = (id) => {
     onNavigate(id)
     setMobileMenuOpen(false)
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(false)
+    }, 500)
   }
 
   return (
     <>
       {/* Floating Top Navigation Header */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex justify-center px-4 py-3 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex justify-center px-4 py-3 ${
           scrolled ? 'pt-3' : 'pt-5'
         }`}
       >
         <nav
-          className={`flex items-center justify-between gap-4 px-5 py-2.5 rounded-full border transition-all duration-300 ${
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className={`group flex items-center justify-center rounded-full border transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             scrolled
-              ? 'bg-[#150917]/85 backdrop-blur-xl border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
-              : 'bg-[#1a0c1c]/60 backdrop-blur-md border-white/10 shadow-lg'
-          } max-w-4xl w-full mx-auto`}
+              ? 'bg-[#150917]/90 backdrop-blur-xl border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+              : 'bg-[#1a0c1c]/75 backdrop-blur-md border-white/10 shadow-lg hover:border-[#e6613b]/40'
+          } ${
+            isHovered
+              ? 'px-4 sm:px-6 py-2.5 max-w-fit'
+              : 'px-5 py-2 max-w-55'
+          } mx-auto relative cursor-pointer`}
         >
-          {/* Logo / Brand */}
-          <button
-            onClick={() => handleItemClick('home')}
-            className="flex items-center gap-2 text-left group focus:outline-none"
-            aria-label="Aditya Biswas Home"
-          >
-            <div className="w-8 h-8 rounded-full bg-linear-to-tr from-[#e6613b] to-[#f38a58] flex items-center justify-center text-white text-xs font-bold shadow-md group-hover:scale-105 transition-transform">
-              AB
-            </div>
-            <div className="hidden sm:block">
-              <span className="text-xs font-semibold tracking-wider text-white uppercase block leading-none">
-                Aditya Biswas
-              </span>
-              <span className="text-[10px] text-[#ffae8f]/80 font-mono tracking-tight block mt-0.5">
-                PORTFOLIO &apos;25
-              </span>
-            </div>
-          </button>
-
-          {/* Desktop Nav Links (Matching Image 1) */}
-          <div className="hidden md:flex items-center gap-1 sm:gap-2">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleItemClick(item.id)}
-                  className={`relative px-3.5 py-1.5 text-sm font-medium transition-colors duration-200 cursor-pointer ${
-                    isActive
-                      ? 'text-white'
-                      : 'text-[#d6c3cf] hover:text-white'
-                  }`}
-                >
-                  <span>{item.label}</span>
-                  {/* Active Indicator Underline matching Image 1 */}
-                  {isActive && (
-                    <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#f8e5c8] rounded-full shadow-[0_0_8px_rgba(248,229,200,0.8)]" />
-                  )}
-                </button>
-              )
-            })}
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center">
+            {!isHovered ? (
+              /* Shrunk / Collapsed State: Shows Only The Page I'm In */
+              <div className="flex items-center px-3 py-0.5 transition-all duration-700 animate-nav-fade">
+                <span className="text-sm font-semibold tracking-wide text-white relative">
+                  {currentItem.label}
+                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#f8e5c8] rounded-full shadow-[0_0_8px_rgba(248,229,200,0.8)]" />
+                </span>
+              </div>
+            ) : (
+              /* Expanded State: Reveals Full Menu Across The Bar */
+              <div className="flex items-center gap-1 sm:gap-2 animate-nav-fade">
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleItemClick(item.id)}
+                      className={`relative px-3.5 py-1.5 text-sm font-medium transition-colors duration-300 cursor-pointer ${
+                        isActive
+                          ? 'text-white'
+                          : 'text-[#d6c3cf] hover:text-white'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {/* Active Indicator Underline */}
+                      {isActive && (
+                        <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-[#f8e5c8] rounded-full shadow-[0_0_8px_rgba(248,229,200,0.8)]" />
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Right Action: Index Button */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onOpenIndex}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#2a1329]/80 hover:bg-[#3d1a3b] border border-[#e6613b]/30 text-xs font-semibold text-[#fceee2] tracking-wider uppercase transition-all duration-200 hover:border-[#e6613b]/60 group focus:outline-none shadow-sm"
-              title="Open Quick Index"
+          {/* Mobile View - No blinking dot */}
+          <div className="flex md:hidden items-center gap-3">
+            <div
+              onClick={() => setMobileMenuOpen(true)}
+              className="flex items-center gap-2 px-2 cursor-pointer"
             >
-              <span>INDEX</span>
-              <LayoutGrid className="w-3.5 h-3.5 text-[#f38a58] group-hover:rotate-90 transition-transform duration-300" />
-            </button>
-
-            {/* Mobile Hamburger Menu Toggle */}
+              <span className="text-sm font-semibold text-white">
+                {currentItem.label}
+              </span>
+            </div>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-full bg-[#2a1329]/80 border border-white/10 text-white hover:bg-[#3d1a3b] focus:outline-none"
+              className="p-1.5 rounded-full bg-[#2a1329]/80 border border-white/10 text-white hover:bg-[#3d1a3b] focus:outline-none cursor-pointer"
               aria-label="Toggle Navigation Menu"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-3.5 h-3.5" /> : <Menu className="w-3.5 h-3.5" />}
             </button>
           </div>
         </nav>

@@ -32,16 +32,18 @@ export default function Contact() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.contact-fade',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          stagger: 0.15,
+          stagger: 0.1,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 75%',
+            once: true,
           }
         }
       )
@@ -108,7 +110,7 @@ export default function Contact() {
                 Available for Opportunities
               </div>
               <p className="text-sm text-[#fbeee0] leading-relaxed">
-                Currently open for full-stack engineering internships, junior software roles, and creative web development collaborations.
+                Currently open for web development internships, frontend engineering roles, and creative web development collaborations.
               </p>
             </div>
 
@@ -147,9 +149,6 @@ export default function Contact() {
                   <p className="text-xs font-mono text-[#d6b7c2]">IST (UTC +5:30)</p>
                 </div>
               </div>
-              <span className="text-xs font-mono text-[#ffae8f] px-3 py-1 rounded-full bg-[#170619] border border-white/10">
-                EST. 2004
-              </span>
             </div>
 
             {/* Social Network Circles */}
@@ -263,7 +262,7 @@ export default function Contact() {
                       required
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="e.g. Full-Stack Role / Project Inquiry"
+                      placeholder="e.g. Web Development Role / Project Inquiry"
                       className="w-full px-4 py-3 rounded-2xl bg-[#170619] border border-white/10 focus:border-[#e6613b] focus:outline-none text-white text-sm transition-all"
                     />
                   </div>

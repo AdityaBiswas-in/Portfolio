@@ -32,9 +32,11 @@ export default function Projects({ onSelectProject }) {
           y: 0,
           duration: 0.8,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top 80%',
+            once: true,
           }
         }
       )
@@ -42,16 +44,18 @@ export default function Projects({ onSelectProject }) {
       // Project cards stagger
       gsap.fromTo(
         '.project-card',
-        { opacity: 0, y: 40 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          stagger: 0.15,
+          stagger: 0.1,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: gridRef.current,
             start: 'top 85%',
+            once: true,
           }
         }
       )
@@ -87,7 +91,7 @@ export default function Projects({ onSelectProject }) {
           </div>
 
           <p className="max-w-md text-sm sm:text-base text-[#dec6d4] leading-relaxed">
-            Scalable full-stack systems, dynamic frontend architectures, and creative experiments engineered for real-world impact.
+            Modern web applications, dynamic frontend architectures, and creative experiments engineered for real-world impact.
           </p>
         </div>
 

@@ -17,14 +17,14 @@ A modern, high-performance, and immersive frontend portfolio crafted for **Adity
    - Mouse-movement interactive depth + ScrollTrigger parallax.
    - Top-left portfolio badge (`ADITYA BISWAS PORTFOLIO '25`).
    - Top-right `INDEX` modal trigger.
-   - Central badge: `• BCA STUDENT • DEVELOPER • CREATOR`.
-   - Title: `ADITYA BISWAS — FULL-STACK DEVELOPER`.
+   - Central badge: `• WEB DEVELOPER • CREATOR • UI/UX CRAFTSMAN`.
+   - Title: `ADITYA BISWAS — WEB DEVELOPER`.
    - CTA buttons: `EXPLORE WORK ↓` and `GET IN TOUCH`.
-   - Bottom bar: `KOLKATA, INDIA (EST. 2004)` and social circle links (GitHub, LinkedIn, Facebook, Instagram, Twitter/X, Email).
+   - Bottom bar: `KOLKATA, INDIA` and social circle links (GitHub, LinkedIn, Facebook, Instagram, Twitter/X, Email).
 
 2. **About Me (`— 02 / WHO I AM`)**:
-   - Exact text match: BCA student bridging analytical computer science with intuitive frontend architecture.
-   - 4 tag pills: `BCA STUDENT @ THE BESC`, `FULL-STACK ARCHITECT`, `UI/UX CRAFTSMAN`, `OPEN SOURCE ADVOCATE`.
+   - Bio: Passionate web developer bridging analytical computer science with intuitive frontend architecture.
+   - 4 tag pills: `WEB DEVELOPER`, `FRONTEND ARCHITECT`, `UI/UX CRAFTSMAN`, `OPEN SOURCE ADVOCATE`.
    - Live status card: `CURRENT FOCUS: React 19 architecture, strict TypeScript patterns, and micro-interaction engineering.`
    - Interactive Studio Workstation illustration (`STUDIO WORKSTATION / ARCHITECTURE LAB`) with ultrawide code monitor, architectural lamp, and steaming coffee mug.
 

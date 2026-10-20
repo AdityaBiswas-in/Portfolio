@@ -52,14 +52,13 @@ export default function CinematicScrubBar({ activeSection, onNavigate }) {
         <div className="flex items-center gap-2">
           {/* Status Dot: Active advance or Frozen */}
           <span className="relative flex h-2.5 w-2.5">
-            {isScrolling ? (
-              <>
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f38a58] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#f38a58]" />
-              </>
-            ) : (
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
-            )}
+            <span
+              className={`relative inline-flex rounded-full h-2.5 w-2.5 transition-colors duration-200 ${
+                isScrolling
+                  ? 'bg-[#f38a58] shadow-[0_0_8px_#f38a58]'
+                  : 'bg-emerald-400 shadow-[0_0_8px_#34d399]'
+              }`}
+            />
           </span>
 
           <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-white">

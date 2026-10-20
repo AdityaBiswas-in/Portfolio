@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
 import CinematicBackground from './components/CinematicBackground'
-import CinematicScrubBar from './components/CinematicScrubBar'
 import Hero from './components/Hero'
 import About from './components/About'
 import Projects from './components/Projects'
@@ -55,9 +54,6 @@ export default function App() {
     <div className="relative min-h-screen bg-[#0d0412] text-[#fbeee0] selection:bg-[#e6613b] selection:text-white font-sans antialiased overflow-x-hidden">
       {/* Cinematic Scroll-Controlled Background Animation */}
       <CinematicBackground />
-
-      {/* Floating Cinematic Scrub HUD */}
-      <CinematicScrubBar activeSection={activeSection} onNavigate={handleNavigate} />
 
       {/* Top Floating Glass Navigation Bar (Matching Image 1) */}
       <Navbar

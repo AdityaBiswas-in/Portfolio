@@ -23,8 +23,8 @@ export default function IndexModal({ isOpen, onClose, onNavigate }) {
   const sections = [
     { id: 'home', num: '01', title: 'HOME', desc: 'Hero & sunset vector parallax' },
     { id: 'about', num: '02', title: 'ABOUT ME', desc: 'Craftsmanship, background & studio' },
-    { id: 'projects', num: '03', title: 'PROJECTS', desc: 'Full-stack & frontend engineering' },
-    { id: 'education', num: '04', title: 'EDUCATION', desc: 'BCA @ The BESC & academic foundations' },
+    { id: 'projects', num: '03', title: 'PROJECTS', desc: 'Web & frontend engineering' },
+    { id: 'education', num: '04', title: 'EDUCATION', desc: 'Computer science & academic foundations' },
     { id: 'skills', num: '05', title: 'SKILLS & TOOLBOX', desc: 'Languages, frameworks & dev tooling' },
     { id: 'certificates', num: '06', title: 'CERTIFICATES', desc: 'Verified technical honors & mastery' },
     { id: 'contact', num: '07', title: 'CONTACT', desc: 'Direct communications & inquiry' },

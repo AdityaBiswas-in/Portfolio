@@ -10,14 +10,11 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
   const sunRef = useRef(null)
   const moonRef = useRef(null)
   const starsRef = useRef(null)
-  const shootingStarRef = useRef(null)
   const cloudsRef = useRef(null)
-  const birdsRef = useRef(null)
   const mtnBackRef = useRef(null)
   const mtnMidRef = useRef(null)
   const cabinGlowRef = useRef(null)
   const forestRef = useRef(null)
-  const embersRef = useRef(null)
   const dawnGlowRef = useRef(null)
 
   useEffect(() => {
@@ -64,42 +61,26 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
         duration: 2.5,
       }, 0)
 
-      // 3. STARS & CONSTELLATIONS FADING IN & DRIFTING
+      // 3. STARS & CONSTELLATIONS FADING IN (Midnight)
       tl.fromTo(starsRef.current, 
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: -40, ease: 'none', duration: 3 }, 
+        { opacity: 0 },
+        { opacity: 1, ease: 'none', duration: 3 }, 
         1.2
       )
       .to(starsRef.current, {
-        y: -100,
         opacity: 0.85,
         ease: 'none',
         duration: 4,
       }, 4.2)
       .to(starsRef.current, {
-        opacity: 0.1,
-        y: -140,
+        opacity: 0,
         ease: 'power2.in',
         duration: 1.8,
       }, 8.2) // Stars fade as dawn breaks
 
-      // 4. SHOOTING STAR STREAK SCRUB (Triggered during Projects / Midnight section)
-      tl.fromTo(shootingStarRef.current,
-        { x: -50, y: -20, opacity: 0, scaleX: 0 },
-        { x: 300, y: 150, opacity: 1, scaleX: 1, duration: 0.8, ease: 'power2.out' },
-        3.2
-      )
-      .to(shootingStarRef.current, {
-        opacity: 0,
-        x: 450,
-        y: 220,
-        duration: 0.4,
-        ease: 'power1.in',
-      }, 4.0)
-
-      // 5. MOON RISING OVER THE MOUNTAIN APEX
+      // 4. MOON RISING OVER THE MOUNTAIN APEX
       tl.fromTo(moonRef.current,
-        { y: '200%', opacity: 0, scale: 0.6 },
+        { y: '160%', opacity: 0, scale: 0.7 },
         { y: '0%', opacity: 1, scale: 1, duration: 2.8, ease: 'power2.out' },
         3.5
       )
@@ -116,27 +97,18 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
         ease: 'power1.in',
       }, 8.5)
 
-      // 6. BIRDS SWOOPING & EXITING AS NIGHT FALLS
-      tl.to(birdsRef.current, {
-        x: -260,
-        y: 120,
+
+      // 6. CLOUDS DISSOLVING IN TWILIGHT (No horizontal sliding across right-hand side)
+      tl.to(cloudsRef.current, {
         opacity: 0,
-        ease: 'power1.in',
+        ease: 'power1.out',
         duration: 2.2,
       }, 0)
 
-      // 7. CLOUDS DISSOLVING IN TWILIGHT
-      tl.to(cloudsRef.current, {
-        x: 180,
-        opacity: 0.15,
-        ease: 'none',
-        duration: 3,
-      }, 0)
-
-      // 8. CABIN GLOW IN THE VALLEY (Lights up during About & Projects)
+      // 7. CABIN GLOW IN THE VALLEY (Lights up during About & Projects)
       tl.fromTo(cabinGlowRef.current,
-        { opacity: 0, scale: 0.7 },
-        { opacity: 0.9, scale: 1.1, duration: 1.5, ease: 'power2.out' },
+        { opacity: 0, scale: 0.8 },
+        { opacity: 0.9, scale: 1, duration: 1.5, ease: 'power2.out' },
         1.5
       )
       .to(cabinGlowRef.current, {
@@ -150,39 +122,20 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
         ease: 'power1.in',
       }, 7.8)
 
-      // 9. AMBIENT NIGHT EMBERS / FIREFLIES
-      tl.fromTo(embersRef.current,
-        { opacity: 0, y: 60 },
-        { opacity: 1, y: -80, duration: 3.5, ease: 'none' },
-        4.0
-      )
-      .to(embersRef.current, {
-        opacity: 0,
-        y: -160,
-        duration: 1.5,
-        ease: 'power1.in',
-      }, 7.8)
-
-      // 10. DAWN HORIZON GLOW (Section 07 Contact)
+      // 8. DAWN HORIZON GLOW (Section 07 Contact)
       tl.fromTo(dawnGlowRef.current,
         { opacity: 0, scaleY: 0.3 },
         { opacity: 0.95, scaleY: 1, duration: 1.8, ease: 'power2.out' },
         8.2
       )
 
-      // 11. PARALLAX CAMERA PERSPECTIVE ON MOUNTAINS & FOREST
-      tl.to(mtnBackRef.current, { y: 120, ease: 'none', duration: 10 }, 0)
-      tl.to(mtnMidRef.current, { y: 60, ease: 'none', duration: 10 }, 0)
-      tl.to(forestRef.current, { y: 25, ease: 'none', duration: 10 }, 0)
+      // 9. SUBTLE PARALLAX ON MOUNTAINS & FOREST
+      tl.to(mtnBackRef.current, { y: 60, ease: 'none', duration: 10 }, 0)
+      tl.to(mtnMidRef.current, { y: 30, ease: 'none', duration: 10 }, 0)
+      tl.to(forestRef.current, { y: 12, ease: 'none', duration: 10 }, 0)
 
-      // Subtle ambient continuous drift (layer physics that pause with scroll or gently breathe)
-      gsap.to(cloudsRef.current, {
-        x: '+=20',
-        duration: 12,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut'
-      })
+      // All elements are strictly synchronized with the master scroll timeline (tl).
+      // When scroll stops, all frames freeze completely with zero autonomous drift.
     }, containerRef)
 
     return () => ctx.revert()
@@ -249,16 +202,6 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
             <line x1="68%" y1="44%" x2="82%" y2="38%" />
           </g>
         </svg>
-
-        {/* Cinematic Shooting Star */}
-        <div
-          ref={shootingStarRef}
-          className="absolute top-[18%] left-[20%] w-36 h-[1.5px] opacity-0 rotate-[-25deg] origin-left"
-          style={{
-            background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,230,180,0.8) 70%, #ffffff 100%)',
-            filter: 'drop-shadow(0 0 6px #fff)',
-          }}
-        />
       </div>
 
       {/* 3. Golden Setting Sun */}
@@ -292,173 +235,400 @@ export default function CinematicBackground({ scrollProgress, currentTimeOfDay }
         }}
       />
 
-      {/* 6. Drifting Stylized Clouds */}
-      <div ref={cloudsRef} className="absolute inset-0 w-full h-full">
-        <div
-          className="absolute top-[8%] left-[6%] w-45 sm:w-70 h-8.5 sm:h-11.5 rounded-full opacity-80"
-          style={{
-            background: 'linear-gradient(180deg, rgba(254, 237, 222, 0.75) 0%, rgba(242, 175, 146, 0.6) 100%)',
-            filter: 'blur(0.5px)'
-          }}
-        />
-        <div
-          className="absolute top-[22%] right-[8%] w-40 sm:w-60 h-6.5 sm:h-9 rounded-full opacity-70"
-          style={{
-            background: 'linear-gradient(180deg, rgba(255, 240, 226, 0.7) 0%, rgba(245, 185, 155, 0.5) 100%)',
-          }}
-        />
+      {/* 6. Realistic Layered Cumulus Clouds Moving Left to Right */}
+      <div ref={cloudsRef} className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden">
+        {/* Soft Organic Cloud 1 - Moving Left to Right */}
+        <div className="absolute top-[6%] left-0 animate-cloud-left-to-right-1">
+          <svg
+            className="w-72 sm:w-105 md:w-lg opacity-80 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.15)]"
+            viewBox="0 0 460 140"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="cloud-grad-left" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#fff2e6" stopOpacity="0.95" />
+                <stop offset="45%" stopColor="#ffd8c2" stopOpacity="0.85" />
+                <stop offset="100%" stopColor="#e5987d" stopOpacity="0.5" />
+              </linearGradient>
+              <filter id="soft-blur-left" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" />
+              </filter>
+            </defs>
+            <path
+              d="M 60,110 
+                 C 30,110 10,95 10,75 
+                 C 10,55 30,42 55,42 
+                 C 65,22 95,8 135,8 
+                 C 180,8 215,26 225,48 
+                 C 245,35 285,32 315,48 
+                 C 345,38 385,42 405,62 
+                 C 435,62 450,78 450,96 
+                 C 450,115 425,125 395,125 
+                 L 60,125 Z"
+              fill="url(#cloud-grad-left)"
+              filter="url(#soft-blur-left)"
+            />
+          </svg>
+        </div>
+
+        {/* Soft Organic Cloud 2 - Moving Left to Right */}
+        <div className="absolute top-[18%] left-0 animate-cloud-left-to-right-2">
+          <svg
+            className="w-60 sm:w-88 md:w-105 opacity-75 filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.18)]"
+            viewBox="0 0 380 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="cloud-grad-right" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#fff5eb" stopOpacity="0.92" />
+                <stop offset="50%" stopColor="#f7ccb5" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#dc8c72" stopOpacity="0.45" />
+              </linearGradient>
+              <filter id="soft-blur-right" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3.5" />
+              </filter>
+            </defs>
+            <path
+              d="M 45,95 
+                 C 20,95 5,82 5,66 
+                 C 5,50 22,38 42,38 
+                 C 52,20 80,8 115,8 
+                 C 155,8 185,24 195,42 
+                 C 212,32 245,28 272,42 
+                 C 298,34 330,38 348,54 
+                 C 370,54 378,68 378,82 
+                 C 378,98 355,105 330,105 
+                 L 45,105 Z"
+              fill="url(#cloud-grad-right)"
+              filter="url(#soft-blur-right)"
+            />
+          </svg>
+        </div>
+
+        {/* Soft Organic Cloud 3 - Distant High Altitude */}
+        <div className="absolute top-[3%] left-0 animate-cloud-left-to-right-3">
+          <svg
+            className="w-48 sm:w-68 opacity-45 filter blur-[2px]"
+            viewBox="0 0 380 120"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M 45,95 C 20,95 5,82 5,66 C 5,50 22,38 42,38 C 52,20 80,8 115,8 C 155,8 185,24 195,42 C 212,32 245,28 272,42 C 298,34 330,38 348,54 C 370,54 378,68 378,82 C 378,98 355,105 330,105 L 45,105 Z"
+              fill="#ffffff"
+            />
+          </svg>
+        </div>
       </div>
 
-      {/* 7. Soaring Falcon / Birds Silhouette */}
-      <div ref={birdsRef} className="absolute inset-0 w-full h-full">
-        <svg
-          className="absolute top-[3%] right-[7%] sm:right-[10%] w-27.5 sm:w-37.5 md:w-45 text-[#240e1b] fill-current opacity-90 drop-shadow-md"
-          viewBox="0 0 160 80"
-        >
-          <path d="M 0,25 C 28,18 60,6 100,0 C 92,15 88,32 94,45 C 105,48 135,42 160,35 C 142,50 115,62 88,60 C 72,58 55,48 40,40 C 25,32 10,28 0,25 Z" />
-          <path d="M 94,45 C 85,55 70,68 50,78 C 65,70 82,58 92,48 Z" />
-        </svg>
+      {/* Visual Wind Trails & Breeze Streamers Moving Left to Right */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden z-5">
+        {/* Wind Streamer 1 */}
+        <div className="absolute top-[16%] left-0 w-80 sm:w-115 h-8 animate-wind-stream-1 opacity-70">
+          <svg className="w-full h-full" viewBox="0 0 360 30" fill="none">
+            <defs>
+              <linearGradient id="windGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+                <stop offset="35%" stopColor="#fff2e6" stopOpacity="0.45" />
+                <stop offset="70%" stopColor="#ffd8c2" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M 10,18 Q 80,8 160,18 T 320,12"
+              stroke="url(#windGrad1)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 60,22 Q 130,14 210,22 T 350,16"
+              stroke="url(#windGrad1)"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.6"
+            />
+          </svg>
+        </div>
 
-        <svg
-          className="absolute top-[32%] right-[32%] w-8 sm:w-12 text-[#240e1b] fill-current opacity-70"
-          viewBox="0 0 80 40"
-        >
-          <path d="M 0,15 C 20,8 35,2 50,0 C 45,10 42,20 48,25 C 60,25 72,18 80,15 C 70,25 55,30 42,28 C 30,22 15,18 0,15 Z" />
-        </svg>
+        {/* Wind Streamer 2 */}
+        <div className="absolute top-[28%] left-0 w-72 sm:w-96 h-8 animate-wind-stream-2 opacity-65">
+          <svg className="w-full h-full" viewBox="0 0 320 28" fill="none">
+            <path
+              d="M 10,14 Q 90,6 180,14 T 310,10"
+              stroke="url(#windGrad1)"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+
+        {/* Wind Streamer 3 */}
+        <div className="absolute top-[42%] left-0 w-96 h-8 animate-wind-stream-3 opacity-55">
+          <svg className="w-full h-full" viewBox="0 0 360 26" fill="none">
+            <path
+              d="M 10,12 Q 100,20 200,12 T 340,16"
+              stroke="url(#windGrad1)"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+
+        {/* Floating Gentle Wind Petals / Spores drifting with the wind */}
+        {[
+          { top: '15%', delay: '0s', dur: '10s', size: 'w-2 h-1' },
+          { top: '22%', delay: '3s', dur: '12s', size: 'w-1.5 h-1' },
+          { top: '34%', delay: '6s', dur: '14s', size: 'w-2.5 h-1' },
+          { top: '45%', delay: '2s', dur: '13s', size: 'w-2 h-1' }
+        ].map((windPoint, i) => (
+          <div
+            key={i}
+            className={`absolute left-0 ${windPoint.size} rounded-full bg-white/40 blur-[0.5px] animate-wind-particle`}
+            style={{
+              top: windPoint.top,
+              animationDelay: windPoint.delay,
+              animationDuration: windPoint.dur,
+            }}
+          />
+        ))}
       </div>
 
-      {/* 8. Distant Mountain Peaks with Snowcap */}
-      <div ref={mtnBackRef} className="absolute inset-x-0 bottom-0 h-[65%] w-full">
+      {/* 8. Majestic Distant Alpine Mountain Peaks with Textured Ridges and Snowcaps */}
+      <div ref={mtnBackRef} className="absolute inset-x-0 bottom-0 h-[72%] w-full">
         <svg
           className="w-full h-full object-cover"
           preserveAspectRatio="none"
-          viewBox="0 0 1440 600"
+          viewBox="0 0 1440 680"
         >
           <defs>
             <linearGradient id="cinematic-mtn-back" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#cf4d30" />
-              <stop offset="60%" stopColor="#8d2830" />
-              <stop offset="100%" stopColor="#431221" />
+              <stop offset="0%" stopColor="#e45938" />
+              <stop offset="25%" stopColor="#bf3f34" />
+              <stop offset="60%" stopColor="#802133" />
+              <stop offset="100%" stopColor="#3c0e22" />
+            </linearGradient>
+            <linearGradient id="mtn-shading-left" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#f58055" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#330b1c" stopOpacity="0.8" />
+            </linearGradient>
+            <linearGradient id="mtn-shading-right" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ff946b" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#4d1228" stopOpacity="0.9" />
+            </linearGradient>
+            <linearGradient id="snow-crest" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" />
+              <stop offset="70%" stopColor="#ffeedd" />
+              <stop offset="100%" stopColor="#f5cbb1" />
             </linearGradient>
           </defs>
+
+          {/* Majestic Mountain Massif */}
           <path
-            d="M -50,600 L -50,280 L 160,150 L 380,420 L 720,260 L 1100,450 L 1500,280 L 1500,600 Z"
+            d="M -50,680 
+               L -50,340 
+               L 80,240 
+               L 180,120 
+               L 260,220 
+               L 410,360 
+               L 560,280 
+               L 730,170 
+               L 880,310 
+               L 1040,220 
+               L 1190,320 
+               L 1350,190 
+               L 1500,290 
+               L 1500,680 Z"
             fill="url(#cinematic-mtn-back)"
+          />
+
+          {/* Mountain Ridge Facet Shadow (Left Peak) */}
+          <path
+            d="M 180,120 L 110,270 L 260,220 Z"
+            fill="url(#mtn-shading-left)"
+          />
+          {/* Mountain Ridge Facet Light (Center Peak) */}
+          <path
+            d="M 730,170 L 620,320 L 880,310 Z"
+            fill="url(#mtn-shading-right)"
+            opacity="0.65"
+          />
+          {/* Mountain Ridge Facet Light (Right Peak) */}
+          <path
+            d="M 1350,190 L 1240,340 L 1500,290 Z"
+            fill="url(#mtn-shading-right)"
+            opacity="0.5"
+          />
+
+          {/* Crisp Multi-Faceted Snowcap on Grand Left Summit */}
+          <polygon
+            points="180,120 145,175 165,162 180,185 200,165 220,180 180,120"
+            fill="url(#snow-crest)"
+            filter="drop-shadow(0 2px 8px rgba(0,0,0,0.2))"
+          />
+          {/* Snowcap on Grand Center Summit */}
+          <polygon
+            points="730,170 700,215 720,205 735,225 750,208 765,220 730,170"
+            fill="url(#snow-crest)"
             opacity="0.9"
           />
-          {/* Snowcap on sharp left peak */}
+          {/* Snowcap on Far Right Summit */}
           <polygon
-            points="160,150 135,180 155,172 170,185 185,172 160,150"
-            fill="#fceee2"
-            opacity="0.95"
+            points="1350,190 1325,230 1340,222 1352,238 1368,225 1380,235 1350,190"
+            fill="url(#snow-crest)"
+            opacity="0.85"
           />
         </svg>
       </div>
 
-      {/* 9. Midground Mountain Ridges + Studio Cabin Light in Valley */}
-      <div ref={mtnMidRef} className="absolute inset-x-0 bottom-0 h-[50%] w-full">
+      {/* 9. Midground Rolling Alpine Ridges + Studio Cabin Light */}
+      <div ref={mtnMidRef} className="absolute inset-x-0 bottom-0 h-[56%] w-full">
         <svg
           className="w-full h-full object-cover"
           preserveAspectRatio="none"
-          viewBox="0 0 1440 500"
+          viewBox="0 0 1440 540"
         >
           <defs>
             <linearGradient id="cinematic-mtn-mid" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#7a2034" />
-              <stop offset="50%" stopColor="#551428" />
-              <stop offset="100%" stopColor="#2c0a1e" />
+              <stop offset="0%" stopColor="#96293f" />
+              <stop offset="45%" stopColor="#671932" />
+              <stop offset="100%" stopColor="#2c091f" />
+            </linearGradient>
+            <linearGradient id="ridge-rim" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ff9a70" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#ff9a70" stopOpacity="0" />
             </linearGradient>
           </defs>
+
+          {/* Organic Layered Ridges */}
           <path
-            d="M -50,500 L -50,280 Q 200,320 480,220 T 1000,240 T 1500,160 L 1500,500 Z"
+            d="M -50,540 
+               L -50,260 
+               Q 140,210 320,270 
+               T 720,210 
+               T 1120,250 
+               T 1500,180 
+               L 1500,540 Z"
             fill="url(#cinematic-mtn-mid)"
-            opacity="0.95"
+            opacity="0.98"
+          />
+
+          {/* Rim Light on Ridge Crests */}
+          <path
+            d="M -50,260 
+               Q 140,210 320,270 
+               T 720,210 
+               T 1120,250 
+               T 1500,180"
+            stroke="url(#ridge-rim)"
+            strokeWidth="3"
+            fill="none"
           />
         </svg>
 
         {/* Ambient Warm Cabin Windows in Valley (Lit up as night arrives) */}
         <div
           ref={cabinGlowRef}
-          className="absolute bottom-[35%] left-[45%] opacity-0 pointer-events-none"
+          className="absolute bottom-[38%] left-[46%] opacity-0 pointer-events-none"
         >
           <div className="relative">
-            <div className="w-3.5 h-2 rounded-xs bg-[#ffbe5b] shadow-[0_0_24px_rgba(255,190,91,0.9)]" />
-            <div className="absolute -top-1 -left-1 w-6 h-4 bg-amber-400/20 rounded-full blur-xs" />
+            <div className="w-4 h-2.5 rounded-xs bg-[#ffca65] shadow-[0_0_28px_rgba(255,202,101,0.95)]" />
+            <div className="absolute -top-1.5 -left-1.5 w-7 h-5 bg-amber-400/25 rounded-full blur-xs" />
           </div>
         </div>
       </div>
 
-      {/* 10. Foreground Dense Pine Forest Layer */}
-      <div ref={forestRef} className="absolute inset-x-0 bottom-0 h-[38%] w-full">
+      {/* 10. Foreground Dense Natural Pine & Fir Forest Layer */}
+      <div ref={forestRef} className="absolute inset-x-0 bottom-0 h-[42%] w-full">
         <svg
           className="w-full h-full object-cover"
           preserveAspectRatio="none"
-          viewBox="0 0 1440 380"
+          viewBox="0 0 1440 420"
         >
           <defs>
-            <linearGradient id="cinematic-forest-back" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#320f26" />
-              <stop offset="100%" stopColor="#150516" />
+            <linearGradient id="forest-deep-back" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#3d142d" />
+              <stop offset="100%" stopColor="#19061a" />
             </linearGradient>
-            <linearGradient id="cinematic-forest-front" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#20071c" />
-              <stop offset="100%" stopColor="#0c020d" />
+            <linearGradient id="forest-mid-layer" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#290b20" />
+              <stop offset="100%" stopColor="#110313" />
+            </linearGradient>
+            <linearGradient id="forest-front-layer" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#1c0618" />
+              <stop offset="100%" stopColor="#08010a" />
             </linearGradient>
           </defs>
 
-          {/* Back Row Trees */}
+          {/* Natural Varied Conifer Canopy - Back Depth (Gentle wind sway) */}
           <path
-            d="M 0,380 L 0,160 
-               L 30,110 L 60,160 L 90,100 L 120,165 L 150,115 L 180,170 
-               L 220,95 L 260,175 L 300,105 L 340,165 L 380,120 L 420,170 
-               L 460,90 L 500,160 L 540,110 L 580,170 L 620,100 L 660,165
-               L 700,95 L 740,160 L 780,115 L 820,175 L 860,105 L 900,170
-               L 940,90 L 980,165 L 1020,110 L 1060,170 L 1100,100 L 1140,165
-               L 1180,120 L 1220,175 L 1260,95 L 1300,160 L 1340,110 L 1380,170
-               L 1410,120 L 1440,160 L 1440,380 Z"
-            fill="url(#cinematic-forest-back)"
-            opacity="0.9"
+            className="animate-tree-sway-back"
+            d="M 0,420 L 0,165 
+               C 15,145 25,120 35,100 C 45,120 55,145 70,165 
+               C 85,150 95,130 105,115 C 115,130 125,155 140,170 
+               C 155,140 170,105 185,85  C 200,110 215,145 230,175 
+               C 245,155 255,135 268,118 C 280,138 295,160 310,180 
+               C 325,145 340,100 355,75  C 370,105 385,150 400,182 
+               C 415,160 428,138 440,120 C 452,142 468,168 485,185 
+               C 500,150 515,110 530,90  C 545,115 560,152 575,180 
+               C 590,160 605,140 618,125 C 630,145 645,168 660,185 
+               C 675,148 690,102 705,78  C 720,108 735,150 750,182 
+               C 765,162 778,140 790,122 C 802,145 818,170 835,188 
+               C 850,152 865,112 880,92  C 895,118 910,155 925,182 
+               C 940,162 955,142 968,126 C 980,146 995,170 1010,188 
+               C 1025,150 1040,105 1055,80 C 1070,110 1085,152 1100,185 
+               C 1115,162 1128,140 1140,122 C 1152,145 1168,170 1185,188 
+               C 1200,152 1215,112 1230,90  C 1245,118 1260,155 1275,182 
+               C 1290,162 1305,138 1320,118 C 1335,140 1350,168 1365,185 
+               C 1380,155 1395,120 1410,95  C 1425,125 1435,155 1440,175 
+               L 1440,420 Z"
+            fill="url(#forest-deep-back)"
+            opacity="0.85"
           />
 
-          {/* Front Row Trees */}
+          {/* Natural Conifer Canopy - Mid Layer */}
           <path
-            d="M 0,380 L 0,210 
-               L 25,150 L 50,220 L 75,140 L 100,215 L 130,160 L 160,225 
-               L 195,135 L 230,220 L 265,145 L 300,215 L 335,150 L 370,220 
-               L 410,130 L 450,215 L 490,145 L 530,225 L 570,140 L 610,215
-               L 650,130 L 690,220 L 730,150 L 770,225 L 810,135 L 850,220
-               L 890,125 L 930,215 L 970,145 L 1010,220 L 1050,135 L 1090,215
-               L 1130,155 L 1170,225 L 1210,130 L 1250,215 L 1290,145 L 1330,220
-               L 1370,140 L 1405,215 L 1440,150 L 1440,380 Z"
-            fill="url(#cinematic-forest-front)"
+            d="M 0,420 L 0,195 
+               C 20,175 35,150 48,135 C 60,155 75,180 92,205 
+               C 110,185 125,160 140,145 C 155,165 170,190 190,215 
+               C 210,175 225,135 240,115 C 255,140 270,185 290,218 
+               C 310,195 325,170 340,152 C 355,172 370,200 390,222 
+               C 410,180 425,140 440,118 C 455,145 470,190 490,220 
+               C 510,195 525,170 540,152 C 555,175 570,202 590,225 
+               C 610,178 625,136 640,115 C 655,142 670,188 690,220 
+               C 710,195 725,170 740,152 C 755,175 770,205 790,228 
+               C 810,182 825,140 840,118 C 855,145 870,190 890,222 
+               C 910,198 925,172 940,154 C 955,176 970,205 990,228 
+               C 1010,180 1025,138 1040,116 C 1055,144 1070,190 1090,222 
+               C 1110,198 1125,172 1140,155 C 1155,178 1170,206 1190,230 
+               C 1210,182 1225,140 1240,118 C 1255,146 1270,192 1290,224 
+               C 1310,198 1325,170 1340,152 C 1355,175 1370,205 1390,228 
+               C 1410,190 1425,160 1440,140 L 1440,420 Z"
+            fill="url(#forest-mid-layer)"
+            opacity="0.95"
+          />
+
+          {/* Foreground Crisp Pine Silhouettes with Individual Needle Boughs (Front wind sway) */}
+          <path
+            className="animate-tree-sway-front"
+            d="M 0,420 L 0,230 
+               L 18,195 L 36,245 L 55,185 L 75,248 L 95,200 L 115,255 
+               L 138,180 L 162,250 L 185,190 L 210,260 L 235,175 L 260,252 
+               L 285,198 L 310,265 L 335,170 L 362,255 L 388,195 L 415,268 
+               L 442,165 L 470,258 L 498,190 L 525,270 L 552,175 L 580,262 
+               L 608,198 L 635,272 L 662,168 L 690,258 L 718,192 L 745,270 
+               L 772,172 L 800,265 L 828,195 L 855,272 L 882,165 L 910,260 
+               L 938,190 L 965,272 L 992,170 L 1020,262 L 1048,195 L 1075,275 
+               L 1102,168 L 1130,260 L 1158,192 L 1185,272 L 1212,175 L 1240,265 
+               L 1268,195 L 1295,275 L 1322,170 L 1350,262 L 1378,192 L 1408,270 
+               L 1440,185 L 1440,420 Z"
+            fill="url(#forest-front-layer)"
           />
         </svg>
       </div>
 
-      {/* 11. Ambient Floating Fireflies / Night Embers */}
-      <div ref={embersRef} className="absolute inset-0 w-full h-full opacity-0 pointer-events-none">
-        {[
-          { left: '15%', top: '75%', size: 4, delay: '0s' },
-          { left: '35%', top: '82%', size: 3, delay: '1s' },
-          { left: '55%', top: '78%', size: 5, delay: '2s' },
-          { left: '72%', top: '85%', size: 3, delay: '0.5s' },
-          { left: '88%', top: '74%', size: 4, delay: '1.5s' },
-        ].map((ember, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-[#f38a58] shadow-[0_0_12px_#f38a58] animate-pulse"
-            style={{
-              left: ember.left,
-              top: ember.top,
-              width: `${ember.size}px`,
-              height: `${ember.size}px`,
-              animationDelay: ember.delay,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* 12. Cinematic Vignette Overlay */}
+      {/* 11. Cinematic Vignette Overlay */}
       <div
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={{

@@ -14,16 +14,18 @@ export default function Certificates({ onSelectCertificate }) {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '.cert-card',
-        { opacity: 0, y: 35 },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          stagger: 0.15,
+          stagger: 0.1,
           ease: 'power3.out',
+          clearProps: 'opacity,transform',
           scrollTrigger: {
             trigger: gridRef.current,
             start: 'top 80%',
+            once: true,
           }
         }
       )
@@ -58,7 +60,7 @@ export default function Certificates({ onSelectCertificate }) {
           </div>
 
           <p className="max-w-md text-sm sm:text-base text-[#dec6d4] leading-relaxed">
-            Verified academic and industry certifications validating expertise across full-stack engineering, algorithmic logic, and animation architecture.
+            Verified academic and industry certifications validating expertise across web development, algorithmic logic, and animation architecture.
           </p>
         </div>
 
