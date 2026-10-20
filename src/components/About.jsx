@@ -54,16 +54,13 @@ export default function About({ onViewToolbox }) {
     <section
       id="about"
       ref={sectionRef}
-      className="relative min-h-screen w-full bg-[#170a19] text-[#fbeee0] py-24 px-6 sm:px-12 lg:px-20 overflow-hidden flex items-center"
-      style={{
-        background: 'radial-gradient(ellipse at 80% 20%, rgba(230, 97, 59, 0.08) 0%, transparent 60%), #170a19'
-      }}
+      className="relative min-h-screen w-full text-[#fbeee0] py-28 px-6 sm:px-12 lg:px-20 overflow-hidden flex items-center z-10 bg-transparent"
     >
       {/* Background Subtle Ambience */}
       <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-[#e6613b]/30 to-transparent" />
       <div className="absolute -left-40 top-1/3 w-96 h-96 rounded-full bg-[#e6613b]/5 blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      <div className="max-w-7xl mx-auto w-full p-6 sm:p-10 lg:p-14 rounded-3xl bg-[#140616]/75 backdrop-blur-xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)] grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         {/* Left Column: Biography & Tags (Image 2) */}
         <div ref={leftColRef} className="lg:col-span-7 flex flex-col justify-center">
           {/* Section Marker */}

@@ -75,15 +75,13 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative min-h-screen w-full bg-[#150716] text-[#fbeee0] py-24 px-6 sm:px-12 lg:px-20 overflow-hidden flex items-center"
-      style={{
-        background: 'radial-gradient(ellipse at 50% 100%, rgba(230, 97, 59, 0.12) 0%, transparent 70%), #140715'
-      }}
+      className="relative min-h-screen w-full bg-transparent text-[#fbeee0] py-28 px-4 sm:px-8 lg:px-16 overflow-hidden flex items-center z-10"
     >
       <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-[#e6613b]/30 to-transparent" />
       <div className="absolute left-10 bottom-10 w-96 h-96 rounded-full bg-[#e6613b]/8 blur-[160px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto w-full">
+      {/* Cinematic Glass Capsule */}
+      <div className="max-w-7xl mx-auto w-full p-6 sm:p-10 lg:p-12 rounded-3xl bg-[#140616]/75 backdrop-blur-xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
         {/* Section Header */}
         <div className="contact-fade mb-14 max-w-2xl">
           <div className="flex items-center gap-2 mb-3">

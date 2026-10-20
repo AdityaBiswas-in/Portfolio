@@ -64,16 +64,14 @@ export default function Projects({ onSelectProject }) {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative min-h-screen w-full bg-[#140816] text-[#fbeee0] py-24 px-6 sm:px-12 lg:px-20 overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, #170a19 0%, #130715 50%, #160818 100%)'
-      }}
+      className="relative min-h-screen w-full bg-transparent text-[#fbeee0] py-28 px-4 sm:px-8 lg:px-16 overflow-hidden z-10"
     >
-      {/* Decorative top border & ambient light */}
+      {/* Decorative top border */}
       <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-[#e6613b]/30 to-transparent" />
       <div className="absolute right-0 top-1/4 w-96 h-96 rounded-full bg-[#e6613b]/5 blur-[140px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto w-full">
+      {/* Cinematic Glass Capsule */}
+      <div className="max-w-7xl mx-auto w-full p-6 sm:p-10 lg:p-12 rounded-3xl bg-[#140616]/75 backdrop-blur-xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
         {/* Section Header */}
         <div className="projects-header flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>

@@ -49,15 +49,13 @@ export default function Skills() {
     <section
       id="skills"
       ref={sectionRef}
-      className="relative min-h-screen w-full bg-[#150716] text-[#fbeee0] py-24 px-6 sm:px-12 lg:px-20 overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, #150817 0%, #18091a 50%, #140715 100%)'
-      }}
+      className="relative min-h-screen w-full bg-transparent text-[#fbeee0] py-28 px-4 sm:px-8 lg:px-16 overflow-hidden z-10"
     >
       <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-transparent via-[#e6613b]/30 to-transparent" />
       <div className="absolute right-10 bottom-1/4 w-80 h-80 rounded-full bg-[#e6613b]/5 blur-[130px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto w-full">
+      {/* Cinematic Glass Capsule */}
+      <div className="max-w-7xl mx-auto w-full p-6 sm:p-10 lg:p-12 rounded-3xl bg-[#140616]/75 backdrop-blur-xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
         {/* Section Header */}
         <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>

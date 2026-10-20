@@ -23,7 +23,7 @@ export default function Footer({ onScrollTop }) {
   }, [])
 
   return (
-    <footer className="relative w-full bg-[#110512] text-[#d6b7c2] border-t border-[#e6613b]/20 py-10 px-6 sm:px-12 lg:px-20 overflow-hidden">
+    <footer className="relative w-full bg-[#110512]/90 backdrop-blur-md text-[#d6b7c2] border-t border-[#e6613b]/20 py-10 px-6 sm:px-12 lg:px-20 overflow-hidden z-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono">
         {/* Left: Attribution */}
         <div className="text-center md:text-left space-y-1">
