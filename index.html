@@ -1779,98 +1779,88 @@
 
         const sizes = { width: window.innerWidth, height: window.innerHeight };
 
-        // Procedural Parking Garage Asphalt Floor Texture with Stall Markings & Tire Rubber
+        // Procedural Ultra-Luxury Supercar Showroom Floor Texture (High-Gloss Polished Onyx Slabs & Staging Plinth)
         function createShowroomFloorTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 2048;
             canvas.height = 2048;
             const ctx = canvas.getContext('2d');
             
-            // Deep dark charcoal asphalt base tone
-            ctx.fillStyle = '#080a0e';
+            // Deep luxury mirror-polished obsidian onyx base
+            ctx.fillStyle = '#06070a';
             ctx.fillRect(0, 0, 2048, 2048);
             
-            // Subtle fine aggregate concrete speckling
+            // Subtle micro-crystalline stone aggregate & polished mineral grain
             const imgData = ctx.getImageData(0, 0, 2048, 2048);
             const d = imgData.data;
             for (let i = 0; i < d.length; i += 4) {
-                const grain = (Math.random() - 0.5) * 8;
+                const grain = (Math.random() - 0.5) * 6;
                 d[i]     = Math.min(255, Math.max(0, d[i] + grain));
                 d[i + 1] = Math.min(255, Math.max(0, d[i + 1] + grain));
                 d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain + 1));
             }
             ctx.putImageData(imgData, 0, 0);
 
-            // Realistic parking bay rubber tire wear streaks
-            ctx.strokeStyle = 'rgba(2, 3, 5, 0.45)';
-            ctx.lineWidth = 54;
-            ctx.lineCap = 'round';
-            for (let x = -800; x <= 2800; x += 520) {
-                ctx.beginPath();
-                ctx.moveTo(x - 50, 150);
-                ctx.lineTo(x + 550, 1900);
-                ctx.stroke();
-            }
-
-            // Bold architectural white parking stall lines
-            ctx.lineWidth = 26.0;
-            ctx.strokeStyle = 'rgba(245, 248, 255, 0.92)';
-            ctx.lineCap = 'square';
-
-            // Angled parking stall stripes crossing the floor
-            for (let x = -800; x <= 3000; x += 440) {
-                ctx.beginPath();
-                ctx.moveTo(x - 200, 0);
-                ctx.lineTo(x + 750, 2048);
-                ctx.stroke();
-            }
-
-            // Stall end-boundary perpendicular guide lines
-            ctx.lineWidth = 22.0;
-            ctx.strokeStyle = 'rgba(240, 245, 255, 0.88)';
-            ctx.beginPath();
-            ctx.moveTo(100, 480);
-            ctx.lineTo(1950, 480);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(100, 1620);
-            ctx.lineTo(1950, 1620);
-            ctx.stroke();
-
-            // Safety yellow stall limit demarcation line
-            ctx.lineWidth = 14.0;
-            ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
-            ctx.beginPath();
-            ctx.moveTo(100, 1660);
-            ctx.lineTo(1950, 1660);
-            ctx.stroke();
-
-            // Stenciled Road Marking "BAY 04" on the parking stall floor
-            ctx.fillStyle = 'rgba(245, 248, 255, 0.75)';
-            ctx.font = '900 110px "Outfit", sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('BAY 04', 1024, 1540);
-
-            ctx.fillStyle = 'rgba(245, 158, 11, 0.80)';
-            ctx.font = 'bold 30px "Courier New", monospace';
-            ctx.fillText('BMW M PERFORMANCE // RESERVED', 1024, 1590);
-
-            // Hairline architectural expansion joints
+            // Large-format luxury architectural porcelain slab grid (512x512)
             ctx.lineWidth = 1.5;
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-            for (let i = 0; i <= 2048; i += 512) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+            for (let i = 0; i <= 2048; i += 256) {
                 ctx.beginPath();
                 ctx.moveTo(i, 0);
                 ctx.lineTo(i, 2048);
                 ctx.stroke();
-                
+
                 ctx.beginPath();
                 ctx.moveTo(0, i);
                 ctx.lineTo(2048, i);
                 ctx.stroke();
             }
-            
+
+            // Hairline warm bronze / titanium metallic expansion inlays
+            ctx.lineWidth = 1.0;
+            ctx.strokeStyle = 'rgba(217, 119, 6, 0.14)';
+            for (let i = 0; i <= 2048; i += 512) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, 2048);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(2048, i);
+                ctx.stroke();
+            }
+
+            // High-End Presentation Plinth: Centered car staging platform
+            const px = 1024 - 400;
+            const py = 1024 - 600;
+            const pw = 800;
+            const ph = 1200;
+
+            // Soft golden ambient glow contour surrounding the staging plinth
+            ctx.lineWidth = 28.0;
+            ctx.strokeStyle = 'rgba(217, 119, 6, 0.16)';
+            ctx.strokeRect(px - 10, py - 10, pw + 20, ph + 20);
+
+            // Crisp recessed LED floor contour runway light track
+            ctx.lineWidth = 5.0;
+            ctx.strokeStyle = 'rgba(240, 245, 255, 0.95)';
+            ctx.strokeRect(px, py, pw, ph);
+
+            // Subtle carbon-terrazzo plinth interior inlay
+            ctx.fillStyle = 'rgba(10, 13, 18, 0.55)';
+            ctx.fillRect(px + 4, py + 4, pw - 8, ph - 8);
+
+            // Elegant luxury typography engraved into the plinth border
+            ctx.fillStyle = 'rgba(245, 248, 255, 0.70)';
+            ctx.font = 'bold 24px "Outfit", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('BMW M PERFORMANCE STUDIO // PITCH BLACK VAULT', 1024, py + ph + 44);
+
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.85)';
+            ctx.font = 'bold 16px "Courier New", monospace';
+            ctx.fillText('BAY 04 // 503 HP S58 TWIN-TURBO // BESPOKE COMMISSION', 1024, py + ph + 72);
+
             const tex = new THREE.CanvasTexture(canvas);
             tex.wrapS = THREE.ClampToEdgeWrapping;
             tex.wrapT = THREE.ClampToEdgeWrapping;
@@ -1940,75 +1930,92 @@
             return new THREE.CanvasTexture(canvas);
         }
 
-        // Procedural Architectural Cast Concrete Wall Texture (Back Wall)
+        // Procedural Architectural Fluted Smoked Walnut Wood Wall Texture (Back Wall)
         function createWallConcreteTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 2048;
             canvas.height = 1024;
             const ctx = canvas.getContext('2d');
 
-            // Deep dark architectural cast concrete tone
-            ctx.fillStyle = '#13161c';
+            // Deep charcoal matte wall base
+            ctx.fillStyle = '#0a0c10';
             ctx.fillRect(0, 0, 2048, 1024);
 
-            // Fine aggregate concrete texture & micro-speckling
-            const imgData = ctx.getImageData(0, 0, 2048, 1024);
-            const d = imgData.data;
-            for (let i = 0; i < d.length; i += 4) {
-                const grain = (Math.random() - 0.5) * 10;
-                d[i]     = Math.min(255, Math.max(0, d[i] + grain));
-                d[i + 1] = Math.min(255, Math.max(0, d[i + 1] + grain));
-                d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain + 2));
-            }
-            ctx.putImageData(imgData, 0, 0);
-
-            // Horizontal & vertical architectural panel formwork seams
-            for (let y = 256; y < 1024; y += 256) {
-                ctx.fillStyle = 'rgba(2, 3, 5, 0.75)';
-                ctx.fillRect(0, y, 2048, 3);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.fillRect(0, y + 3, 2048, 1.5);
-
-                // Tie-rod anchor impressions
-                for (let x = 128; x < 2048; x += 256) {
-                    ctx.beginPath();
-                    ctx.arc(x, y - 20, 6, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(2, 3, 5, 0.85)';
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(x - 1, y - 21, 3.5, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(24, 28, 36, 0.9)';
-                    ctx.fill();
-                }
+            // Architectural vertical fluted acoustic wood slats
+            const slatW = 16;
+            const gapW = 8;
+            for (let x = 0; x < 2048; x += slatW + gapW) {
+                // Smoked dark walnut slat
+                ctx.fillStyle = '#14161d';
+                ctx.fillRect(x, 0, slatW, 1024);
+                // Slat subtle highlight bevel
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+                ctx.fillRect(x, 0, 2, 1024);
+                // Dark recessed shadow gap
+                ctx.fillStyle = '#050608';
+                ctx.fillRect(x + slatW, 0, gapW, 1024);
             }
 
-            for (let x = 512; x < 2048; x += 512) {
-                ctx.fillStyle = 'rgba(2, 3, 5, 0.70)';
-                ctx.fillRect(x, 0, 3, 1024);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-                ctx.fillRect(x + 3, 0, 1.5, 1024);
-            }
+            // Central Monolithic Feature Showcase Panel (Brushed Dark Titanium)
+            const fPanelW = 1024;
+            const fPanelH = 680;
+            const fPanelX = (2048 - fPanelW) / 2;
+            const fPanelY = 160;
 
-            // Sleek dark brushed aluminum wall kickplate along the floor
-            const kickHeight = 70;
-            const kickY = 1024 - kickHeight;
-            ctx.fillStyle = '#0a0c10';
-            ctx.fillRect(0, kickY, 2048, kickHeight);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.fillRect(0, kickY, 2048, 2);
+            // Warm golden ambient back-illumination behind the central feature wall
+            const backGlow = ctx.createRadialGradient(1024, fPanelY + fPanelH / 2, 120, 1024, fPanelY + fPanelH / 2, 620);
+            backGlow.addColorStop(0, 'rgba(217, 119, 6, 0.32)');
+            backGlow.addColorStop(0.55, 'rgba(217, 119, 6, 0.12)');
+            backGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = backGlow;
+            ctx.fillRect(fPanelX - 120, fPanelY - 120, fPanelW + 240, fPanelH + 240);
 
-            // Subtle architectural wall stencils
-            ctx.fillStyle = 'rgba(240, 243, 248, 0.35)';
-            ctx.font = 'bold 36px "Courier New", monospace';
-            ctx.fillText('SECTOR 02 // PIT LANE', 320, 200);
+            // Feature panel face: dark brushed titanium
+            ctx.fillStyle = '#111318';
+            ctx.fillRect(fPanelX, fPanelY, fPanelW, fPanelH);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(fPanelX, fPanelY, fPanelW, fPanelH);
 
-            ctx.fillStyle = 'rgba(235, 240, 250, 0.60)';
-            ctx.font = '900 96px "Outfit", sans-serif';
-            ctx.fillText('BAY 04', 320, 360);
+            // Hairline gold inner accent reveal
+            ctx.strokeStyle = 'rgba(217, 119, 6, 0.65)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(fPanelX + 18, fPanelY + 18, fPanelW - 36, fPanelH - 36);
 
-            ctx.fillStyle = 'rgba(217, 119, 6, 0.75)';
+            // Iconic BMW M Tri-Color Motorsport Accent Bar
+            const barW = 280;
+            const barX = (2048 - barW) / 2;
+            const barY = fPanelY + 150;
+            const barH = 8;
+            const stripeW = barW / 3;
+            ctx.fillStyle = '#0066b1'; // M Light Blue
+            ctx.fillRect(barX, barY, stripeW, barH);
+            ctx.fillStyle = '#001e50'; // M Dark Blue
+            ctx.fillRect(barX + stripeW, barY, stripeW, barH);
+            ctx.fillStyle = '#d1251b'; // M Red
+            ctx.fillRect(barX + stripeW * 2, barY, stripeW, barH);
+
+            // Illuminated Luxury Typography
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.96)';
+            ctx.font = '900 68px "Outfit", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('BMW /// M', 1024, fPanelY + 280);
+
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.88)';
             ctx.font = 'bold 22px "Outfit", sans-serif';
-            ctx.fillText('BMW M PERFORMANCE STUDIO // PITCH BLACK VAULT', 320, 410);
+            ctx.fillText('COMPETITION // PITCH BLACK VAULT', 1024, fPanelY + 330);
+
+            ctx.fillStyle = 'rgba(240, 245, 255, 0.50)';
+            ctx.font = 'bold 18px "Courier New", monospace';
+            ctx.fillText('3.0L TWINPOWER TURBO S58 // 503 HP // BESPOKE SPECIFICATION', 1024, fPanelY + 380);
+
+            // Brushed aluminum kickplate along floor with floor-wash warm LED strip
+            const kickH = 68;
+            const kickY = 1024 - kickH;
+            ctx.fillStyle = '#08090d';
+            ctx.fillRect(0, kickY, 2048, kickH);
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.80)';
+            ctx.fillRect(0, kickY, 2048, 3);
 
             const tex = new THREE.CanvasTexture(canvas);
             tex.wrapS = THREE.RepeatWrapping;
@@ -2016,188 +2023,179 @@
             return tex;
         }
 
-        // Procedural Industrial Roll-Up Garage Shutter Door (Front Wall)
+        // Procedural Panoramic Dark Architectural Glass Curtain Wall (Front Wall)
         function createGarageDoorTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 2048;
             canvas.height = 1024;
             const ctx = canvas.getContext('2d');
 
-            // Surrounding dark concrete portal
-            ctx.fillStyle = '#11141a';
+            // Deep midnight penthouse skyline gradient seen through acoustic double glazing
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, 1024);
+            skyGrad.addColorStop(0, '#040508');
+            skyGrad.addColorStop(0.65, '#070a11');
+            skyGrad.addColorStop(0.85, '#0c121e');
+            skyGrad.addColorStop(1, '#07090e');
+            ctx.fillStyle = skyGrad;
             ctx.fillRect(0, 0, 2048, 1024);
 
-            // Roll-up industrial shutter door bay
-            const doorX = 220;
-            const doorW = 1608;
-            const doorY = 140;
-            const doorH = 884;
+            // Distant metropolitan skyline silhouette & soft warm bokeh city lights
+            ctx.fillStyle = '#030508';
+            for (let bx = 60; bx < 2000; bx += 70 + Math.sin(bx) * 30) {
+                const bw = 50 + Math.sin(bx * 0.2) * 25;
+                const bh = 240 + Math.cos(bx * 0.3) * 160;
+                ctx.fillRect(bx, 880 - bh, bw, bh);
 
-            ctx.fillStyle = '#0c0e13';
-            ctx.fillRect(doorX, doorY, doorW, doorH);
+                for (let wy = 880 - bh + 30; wy < 860; wy += 28) {
+                    for (let wx = bx + 8; wx < bx + bw - 8; wx += 14) {
+                        if (Math.sin(wx * 11 + wy * 7) > 0.35) {
+                            ctx.fillStyle = Math.sin(wx) > 0 ? 'rgba(255, 230, 160, 0.22)' : 'rgba(180, 210, 255, 0.18)';
+                            ctx.fillRect(wx, wy, 4, 6);
+                        }
+                    }
+                }
+            }
 
-            // Corrugated horizontal steel slats with specular highlights
-            for (let y = doorY; y < 1024; y += 28) {
-                ctx.fillStyle = '#181b22';
-                ctx.fillRect(doorX, y, doorW, 14);
-                ctx.fillStyle = '#090b0f';
-                ctx.fillRect(doorX, y + 14, doorW, 14);
+            // Dark anodized aluminum vertical structural mullions
+            ctx.fillStyle = '#0e1117';
+            for (let x = 0; x <= 2048; x += 340) {
+                ctx.fillRect(x - 8, 0, 16, 1024);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.fillRect(doorX, y, doorW, 2);
+                ctx.fillRect(x - 8, 0, 2, 1024);
+                ctx.fillStyle = '#0e1117';
             }
+            // Horizontal transom bars
+            ctx.fillRect(0, 320, 2048, 14);
+            ctx.fillRect(0, 680, 2048, 14);
 
-            // Heavy vertical steel guide channels on left and right
-            ctx.fillStyle = '#252a35';
-            ctx.fillRect(doorX - 36, doorY - 40, 36, doorH + 40);
-            ctx.fillRect(doorX + doorW, doorY - 40, 36, doorH + 40);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-            ctx.fillRect(doorX - 36, doorY - 40, 3, doorH + 40);
-            ctx.fillRect(doorX + doorW, doorY - 40, 3, doorH + 40);
-
-            // Safety yellow & black chevron diagonal hazard band at door base
-            const hazardY = 1024 - 84;
-            const hazardH = 84;
-            ctx.fillStyle = '#f59e0b';
-            ctx.fillRect(doorX, hazardY, doorW, hazardH);
-            ctx.fillStyle = '#0f1116';
-            const stripeW = 54;
-            for (let sx = doorX - 120; sx < doorX + doorW + 120; sx += stripeW * 2) {
-                ctx.beginPath();
-                ctx.moveTo(sx, hazardY);
-                ctx.lineTo(sx + stripeW, hazardY);
-                ctx.lineTo(sx + stripeW - 38, hazardY + hazardH);
-                ctx.lineTo(sx - 38, hazardY + hazardH);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            // Stenciled lintel signage
-            ctx.fillStyle = 'rgba(240, 245, 255, 0.55)';
-            ctx.font = 'bold 30px "Courier New", monospace';
-            ctx.textAlign = 'center';
-            ctx.fillText('AUTOMATED HIGH-SPEED ROLL-UP DOOR // MAX CLEARANCE 3.2M', 1024, doorY - 45);
-
-            // Illuminated status beacon (Green "ACCESS ACTIVE")
-            ctx.beginPath();
-            ctx.arc(1024, doorY - 85, 12, 0, Math.PI * 2);
-            ctx.fillStyle = '#10b981';
-            ctx.fill();
+            // Floor-level structural steel sill with warm gold accent runner
+            ctx.fillStyle = '#08090d';
+            ctx.fillRect(0, 960, 2048, 64);
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.80)';
+            ctx.fillRect(0, 960, 2048, 3);
 
             const tex = new THREE.CanvasTexture(canvas);
             return tex;
         }
 
-        // Procedural Concrete Side Wall Texture with Workshop Stations
+        // Procedural Dark Honed Basalt Side Wall Texture with Recessed Ambient Light Slots
         function createSideWallTexture(isLeft) {
             const canvas = document.createElement('canvas');
             canvas.width = 1536;
             canvas.height = 1024;
             const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = '#13161c';
+            ctx.fillStyle = '#0c0d12';
             ctx.fillRect(0, 0, 1536, 1024);
 
+            // Fine mineral micro-grain
             const imgData = ctx.getImageData(0, 0, 1536, 1024);
             const d = imgData.data;
             for (let i = 0; i < d.length; i += 4) {
-                const grain = (Math.random() - 0.5) * 10;
+                const grain = (Math.random() - 0.5) * 8;
                 d[i]     = Math.min(255, Math.max(0, d[i] + grain));
                 d[i + 1] = Math.min(255, Math.max(0, d[i + 1] + grain));
-                d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain + 2));
+                d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain + 1));
             }
             ctx.putImageData(imgData, 0, 0);
 
-            // Formwork joints
-            for (let y = 256; y < 1024; y += 256) {
-                ctx.fillStyle = 'rgba(2, 3, 5, 0.75)';
-                ctx.fillRect(0, y, 1536, 3);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.fillRect(0, y + 3, 1536, 1.5);
-            }
-            for (let x = 384; x < 1536; x += 384) {
-                ctx.fillStyle = 'rgba(2, 3, 5, 0.70)';
+            // Vertical architectural panel seams
+            for (let x = 256; x < 1536; x += 256) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
                 ctx.fillRect(x, 0, 3, 1024);
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
                 ctx.fillRect(x + 3, 0, 1.5, 1024);
             }
 
-            // Wall kickplate with hazard stripe
-            const kickHeight = 70;
-            const kickY = 1024 - kickHeight;
-            ctx.fillStyle = '#0a0c10';
-            ctx.fillRect(0, kickY, 1536, kickHeight);
-            ctx.fillStyle = 'rgba(245, 158, 11, 0.65)';
-            ctx.fillRect(0, kickY, 1536, 4);
+            // Recessed vertical ambient LED light channels in walls
+            [384, 768, 1152].forEach(lx => {
+                const lightGrad = ctx.createLinearGradient(lx - 24, 0, lx + 24, 0);
+                lightGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                lightGrad.addColorStop(0.5, 'rgba(255, 250, 235, 0.28)');
+                lightGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = lightGrad;
+                ctx.fillRect(lx - 24, 120, 48, 760);
 
-            if (isLeft) {
-                // Emergency Fire Control Station positioned lower on the wall
-                ctx.fillStyle = 'rgba(220, 38, 38, 0.85)';
-                ctx.fillRect(260, 560, 140, 200);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 24px "Courier New", monospace';
-                ctx.textAlign = 'center';
-                ctx.fillText('FIRE', 330, 610);
-                ctx.fillText('SAFETY', 330, 645);
-                ctx.fillText('CO2', 330, 680);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.fillRect(lx - 1.5, 140, 3, 720);
+            });
 
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
-                ctx.font = 'bold 20px "Courier New", monospace';
-                ctx.fillText('EMERGENCY RESPONSE POINT', 330, 790);
-            } else {
-                // Pit Lane Diagnostics Station
-                ctx.fillStyle = 'rgba(30, 41, 59, 0.85)';
-                ctx.fillRect(720, 540, 260, 220);
-                ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(720, 540, 260, 220);
+            // Sleek gallery display vitrine niche
+            const nicheX = isLeft ? 512 : 640;
+            const nicheY = 360;
+            const nicheW = 380;
+            const nicheH = 340;
 
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 18px "Courier New", monospace';
-                ctx.textAlign = 'left';
-                ctx.fillText('M TELEMETRY PORT', 740, 580);
-                ctx.fillStyle = 'rgba(147, 197, 253, 0.9)';
-                ctx.fillText('TIRE N2: 2.80 BAR', 740, 620);
-                ctx.fillText('DIAGNOSTICS: LINKED', 740, 660);
-                ctx.fillText('STATUS: TRACK READY', 740, 700);
-            }
+            ctx.fillStyle = '#07080b';
+            ctx.fillRect(nicheX, nicheY, nicheW, nicheH);
+            ctx.strokeStyle = 'rgba(217, 119, 6, 0.55)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(nicheX, nicheY, nicheW, nicheH);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.88)';
+            ctx.font = 'bold 20px "Outfit", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(isLeft ? 'CFRP AERO ARCHITECTURE' : 'M TELEMETRY & CHASSIS DYNAMICS', nicheX + nicheW / 2, nicheY + 60);
+
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.85)';
+            ctx.font = 'bold 16px "Courier New", monospace';
+            ctx.fillText(isLeft ? 'FORGED CARBON FIBER // -22MM COG' : 'ADAPTIVE M DAMPER // SPORT PLUS', nicheX + nicheW / 2, nicheY + 100);
+
+            // Warm floor cove lighting
+            ctx.fillStyle = '#08090d';
+            ctx.fillRect(0, 960, 1536, 64);
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.80)';
+            ctx.fillRect(0, 960, 1536, 3);
 
             const tex = new THREE.CanvasTexture(canvas);
             return tex;
         }
 
-        // Procedural Structural Concrete Pillar Texture with Bay Identification
+        // Procedural Structural Dark Titanium & Glass Pillar Texture
         function createPillarConcreteTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 512;
             canvas.height = 1024;
             const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = '#15181f';
+            // Dark anodized titanium pillar tone
+            ctx.fillStyle = '#111319';
             ctx.fillRect(0, 0, 512, 1024);
 
+            // Vertical brushed metallic texture
             const imgData = ctx.getImageData(0, 0, 512, 1024);
             const d = imgData.data;
             for (let i = 0; i < d.length; i += 4) {
-                const grain = (Math.random() - 0.5) * 10;
+                const grain = (Math.random() - 0.5) * 8;
                 d[i]     = Math.min(255, Math.max(0, d[i] + grain));
                 d[i + 1] = Math.min(255, Math.max(0, d[i + 1] + grain));
-                d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain));
+                d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain + 1));
             }
             ctx.putImageData(imgData, 0, 0);
 
-            // Pillar base protective rubber guard
+            // Integrated vertical recessed LED light channel
+            const lightGrad = ctx.createLinearGradient(236, 0, 276, 0);
+            lightGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            lightGrad.addColorStop(0.5, 'rgba(255, 250, 235, 0.45)');
+            lightGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = lightGrad;
+            ctx.fillRect(236, 0, 40, 1024);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.fillRect(254, 0, 4, 1024);
+
+            // Pillar base warm gold accent band
             ctx.fillStyle = '#080a0d';
-            ctx.fillRect(0, 860, 512, 164);
-            ctx.fillStyle = 'rgba(217, 119, 6, 0.70)';
-            ctx.fillRect(0, 852, 512, 8);
+            ctx.fillRect(0, 880, 512, 144);
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.80)';
+            ctx.fillRect(0, 874, 512, 6);
 
             // Stenciled Bay Number "04"
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
             ctx.font = '900 120px "Outfit", sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('04', 256, 460);
 
-            ctx.fillStyle = 'rgba(217, 119, 6, 0.70)';
+            ctx.fillStyle = 'rgba(217, 119, 6, 0.80)';
             ctx.font = 'bold 22px "Courier New", monospace';
             ctx.fillText('M DIVISION', 256, 500);
 
@@ -2205,33 +2203,23 @@
             return tex;
         }
 
-        // Procedural Garage Concrete Ceiling Texture
+        // Procedural Garage Acoustic Ceiling Texture
         function createCeilingConcreteTexture() {
             const canvas = document.createElement('canvas');
             canvas.width = 1024;
             canvas.height = 1024;
             const ctx = canvas.getContext('2d');
 
-            ctx.fillStyle = '#0f1116';
+            ctx.fillStyle = '#080a0e';
             ctx.fillRect(0, 0, 1024, 1024);
 
-            const imgData = ctx.getImageData(0, 0, 1024, 1024);
-            const d = imgData.data;
-            for (let i = 0; i < d.length; i += 4) {
-                const grain = (Math.random() - 0.5) * 8;
-                d[i]     = Math.min(255, Math.max(0, d[i] + grain));
-                d[i + 1] = Math.min(255, Math.max(0, d[i + 1] + grain));
-                d[i + 2] = Math.min(255, Math.max(0, d[i + 2] + grain));
+            // Acoustic panel grid
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+            for (let y = 0; y < 1024; y += 128) {
+                ctx.fillRect(0, y, 1024, 2);
             }
-            ctx.putImageData(imgData, 0, 0);
-
-            // Ceiling expansion joint grid
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            for (let y = 0; y < 1024; y += 256) {
-                ctx.fillRect(0, y, 1024, 3);
-            }
-            for (let x = 0; x < 1024; x += 256) {
-                ctx.fillRect(x, 0, 3, 1024);
+            for (let x = 0; x < 1024; x += 128) {
+                ctx.fillRect(x, 0, 2, 1024);
             }
 
             const tex = new THREE.CanvasTexture(canvas);
@@ -2247,13 +2235,16 @@
             const garageGroup = new THREE.Group();
             scene.add(garageGroup);
 
-            // 1. Realistic Parking Garage Asphalt Floor with Stall Markings (Fully Enclosed & Solid)
+            // 1. High-Gloss Mirror-Polished Onyx Porcelain Floor
             const floorGeo = new THREE.PlaneGeometry(38, 28);
-            const floorMat = new THREE.MeshStandardMaterial({
+            const floorMat = new THREE.MeshPhysicalMaterial({
                 map: createShowroomFloorTexture(),
-                roughness: 0.90,
-                metalness: 0.02,
-                envMapIntensity: 0.28
+                roughness: 0.14,
+                metalness: 0.12,
+                clearcoat: 0.92,
+                clearcoatRoughness: 0.08,
+                reflectivity: 0.75,
+                envMapIntensity: 0.85
             });
             const floorMesh = new THREE.Mesh(floorGeo, floorMat);
             floorMesh.rotation.x = -Math.PI / 2;
@@ -2274,11 +2265,11 @@
             shadowMesh.position.set(0, -0.375, 0);
             garageGroup.add(shadowMesh);
 
-            // 3. Concrete Architectural Back Wall (z = -11.5)
+            // 3. Fluted Smoked Walnut Architectural Back Wall (z = -11.5)
             const backWallMat = new THREE.MeshStandardMaterial({
                 map: createWallConcreteTexture(),
-                roughness: 0.88,
-                metalness: 0.05
+                roughness: 0.75,
+                metalness: 0.15
             });
             const backWallGeo = new THREE.PlaneGeometry(38, 9.5);
             const backWall = new THREE.Mesh(backWallGeo, backWallMat);
@@ -2286,11 +2277,11 @@
             backWall.receiveShadow = true;
             garageGroup.add(backWall);
 
-            // 4. Industrial Automated Roll-Up Garage Door Front Wall (z = 12.5)
+            // 4. Panoramic Night Architectural Glass Facade (z = 12.5)
             const frontWallMat = new THREE.MeshStandardMaterial({
                 map: createGarageDoorTexture(),
-                roughness: 0.65,
-                metalness: 0.35
+                roughness: 0.35,
+                metalness: 0.55
             });
             const frontWallGeo = new THREE.PlaneGeometry(38, 9.5);
             const frontWall = new THREE.Mesh(frontWallGeo, frontWallMat);
@@ -2299,12 +2290,12 @@
             frontWall.receiveShadow = true;
             garageGroup.add(frontWall);
 
-            // 5. Left & Right Architectural Concrete Side Walls (x = ±15.0)
+            // 5. Left & Right Architectural Dark Basalt Side Walls (x = ±15.0)
             const sideWallGeo = new THREE.PlaneGeometry(24, 9.5);
             const leftWallMat = new THREE.MeshStandardMaterial({
                 map: createSideWallTexture(true),
-                roughness: 0.88,
-                metalness: 0.05
+                roughness: 0.80,
+                metalness: 0.10
             });
             const leftWall = new THREE.Mesh(sideWallGeo, leftWallMat);
             leftWall.rotation.y = Math.PI / 2;
@@ -2314,8 +2305,8 @@
 
             const rightWallMat = new THREE.MeshStandardMaterial({
                 map: createSideWallTexture(false),
-                roughness: 0.88,
-                metalness: 0.05
+                roughness: 0.80,
+                metalness: 0.10
             });
             const rightWall = new THREE.Mesh(sideWallGeo, rightWallMat);
             rightWall.rotation.y = -Math.PI / 2;
@@ -2323,54 +2314,99 @@
             rightWall.receiveShadow = true;
             garageGroup.add(rightWall);
 
-            // 6. Architectural Concrete Ceiling
+            // 6. Architectural Acoustic Ceiling
             const ceilingGeo = new THREE.PlaneGeometry(38, 24);
             const ceilingMat = new THREE.MeshStandardMaterial({
                 map: createCeilingConcreteTexture(),
-                roughness: 0.92,
-                metalness: 0.04
+                roughness: 0.90,
+                metalness: 0.05
             });
             const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
             ceiling.rotation.x = Math.PI / 2;
             ceiling.position.set(0, 5.8, 0.5);
             garageGroup.add(ceiling);
 
-            // 7. Heavy Transverse Concrete Ceiling Beams with Recessed Linear LED Strip Lights
-            const beamGeo = new THREE.BoxGeometry(38, 0.45, 0.75);
+            // 7. Suspended Architectural Hexagonal Honeycomb LED Ceiling Array
+            const hexGroup = new THREE.Group();
+            garageGroup.add(hexGroup);
+
+            const tubeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const hexR = 1.05;
+            const hexEdge = hexR * Math.sin(Math.PI / 6) * 2;
+            const tubeGeo = new THREE.BoxGeometry(hexEdge * 0.95, 0.04, 0.05);
+
+            const hexCenters = [
+                [0, 0],
+                [-1.82, 0], [1.82, 0],
+                [-0.91, 1.58], [0.91, 1.58],
+                [-0.91, -1.58], [0.91, -1.58],
+                [-1.82, 3.16], [0, 3.16], [1.82, 3.16],
+                [-1.82, -3.16], [0, -3.16], [1.82, -3.16]
+            ];
+
+            hexCenters.forEach(([hx, hz]) => {
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const midAngle = angle + Math.PI / 6;
+                    const mx = hx + Math.cos(midAngle) * (hexR * 0.866);
+                    const mz = hz + Math.sin(midAngle) * (hexR * 0.866);
+                    const tube = new THREE.Mesh(tubeGeo, tubeMat);
+                    tube.position.set(mx, 5.25, mz);
+                    tube.rotation.y = -angle;
+                    hexGroup.add(tube);
+                }
+            });
+
+            // Dark anodized frame surrounding the honeycomb array
+            const frameMat = new THREE.MeshStandardMaterial({
+                color: new THREE.Color(0x151820),
+                metalness: 0.85,
+                roughness: 0.20
+            });
+            const frameW = 6.2;
+            const frameL = 8.6;
+            const fBeamX = new THREE.BoxGeometry(frameW, 0.08, 0.10);
+            const fBeamZ = new THREE.BoxGeometry(0.10, 0.08, frameL);
+
+            const fTop = new THREE.Mesh(fBeamX, frameMat);
+            fTop.position.set(0, 5.28, -frameL / 2);
+            hexGroup.add(fTop);
+            const fBottom = new THREE.Mesh(fBeamX, frameMat);
+            fBottom.position.set(0, 5.28, frameL / 2);
+            hexGroup.add(fBottom);
+            const fLeft = new THREE.Mesh(fBeamZ, frameMat);
+            fLeft.position.set(-frameW / 2, 5.28, 0);
+            hexGroup.add(fLeft);
+            const fRight = new THREE.Mesh(fBeamZ, frameMat);
+            fRight.position.set(frameW / 2, 5.28, 0);
+            hexGroup.add(fRight);
+
+            // 8. Transverse Architectural Beams with Inset Linear LED Troffers
+            const beamGeo = new THREE.BoxGeometry(38, 0.35, 0.60);
             const beamMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0x14171d),
-                roughness: 0.85
+                color: new THREE.Color(0x10131a),
+                roughness: 0.75,
+                metalness: 0.25
             });
             const stripMat = new THREE.MeshBasicMaterial({ color: 0xfffaea });
-            const lightStripGeo = new THREE.BoxGeometry(22, 0.05, 0.16);
+            const lightStripGeo = new THREE.BoxGeometry(22, 0.04, 0.14);
 
-            [-6.0, -0.5, 5.5].forEach((zPos) => {
+            [-6.5, -0.5, 6.0].forEach((zPos) => {
                 const beam = new THREE.Mesh(beamGeo, beamMat);
-                beam.position.set(0, 5.55, zPos);
+                beam.position.set(0, 5.60, zPos);
                 garageGroup.add(beam);
 
                 const strip = new THREE.Mesh(lightStripGeo, stripMat);
-                strip.position.set(0, 5.30, zPos);
+                strip.position.set(0, 5.40, zPos);
                 garageGroup.add(strip);
             });
 
-            // 8. Overhead Industrial HVAC Ventilation Duct running along ceiling edge
-            const ductGeo = new THREE.BoxGeometry(0.9, 0.5, 24);
-            const ductMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0x2d3440),
-                metalness: 0.75,
-                roughness: 0.35
-            });
-            const duct = new THREE.Mesh(ductGeo, ductMat);
-            duct.position.set(13.8, 5.4, 0.5);
-            garageGroup.add(duct);
-
-            // 9. Structural Concrete Support Columns (Pillars) framing walls cleanly
+            // 9. Structural Titanium Support Columns with Integrated Recessed LED Channels
             const pillarGeo = new THREE.BoxGeometry(1.0, 6.2, 1.0);
             const pillarMat = new THREE.MeshStandardMaterial({
                 map: createPillarConcreteTexture(),
-                roughness: 0.85,
-                metalness: 0.05
+                roughness: 0.55,
+                metalness: 0.45
             });
 
             const pillarPositions = [
@@ -2387,21 +2423,17 @@
                 garageGroup.add(pillar);
             });
 
-            // 10. Overhead Industrial Conduit Pipes running along the top of the back wall
-            const pipeMat = new THREE.MeshStandardMaterial({
-                color: new THREE.Color(0x48505a),
-                metalness: 0.85,
-                roughness: 0.28
-            });
-            [5.0, 5.2, 5.4].forEach((py, i) => {
-                const pipeGeo = new THREE.CylinderGeometry(0.04, 0.04, 38, 16);
-                const pipe = new THREE.Mesh(pipeGeo, pipeMat);
-                pipe.rotation.z = Math.PI / 2;
-                pipe.position.set(0, py, -11.38 + i * 0.07);
-                garageGroup.add(pipe);
-            });
+            // 10. Floor Cove Ambient Lighting Runner along side walls
+            const coveMat = new THREE.MeshBasicMaterial({ color: 0xd97706 });
+            const coveGeo = new THREE.BoxGeometry(0.04, 0.04, 24);
+            const leftCove = new THREE.Mesh(coveGeo, coveMat);
+            leftCove.position.set(-14.90, -0.36, 0.5);
+            garageGroup.add(leftCove);
+            const rightCove = new THREE.Mesh(coveGeo, coveMat);
+            rightCove.position.set(14.90, -0.36, 0.5);
+            garageGroup.add(rightCove);
 
-            // 12. Panorama Backdrop Environment fallback
+            // 11. Panorama Backdrop Environment fallback
             textureLoader.load('./garage_bg.jpg', (tex) => {
                 tex.colorSpace = THREE.SRGBColorSpace;
                 tex.mapping = THREE.EquirectangularReflectionMapping;
