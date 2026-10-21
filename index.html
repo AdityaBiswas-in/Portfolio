@@ -155,6 +155,104 @@
             align-items: center;
         }
 
+        /* Royal sound toggle button */
+        .sound-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            margin-right: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            outline: none;
+            pointer-events: auto;
+        }
+
+        .sound-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.04);
+        }
+
+        .sound-toggle-btn.active {
+            background: rgba(255, 246, 237, 0.12);
+            border-color: rgba(255, 220, 180, 0.6);
+            color: #fff6ed;
+            box-shadow: 0 0 16px rgba(212, 140, 60, 0.25);
+        }
+
+        .sound-waves {
+            display: flex;
+            align-items: center;
+            gap: 2.5px;
+            height: 12px;
+        }
+
+        .sound-bar {
+            width: 2px;
+            height: 3px;
+            background: currentColor;
+            border-radius: 1px;
+            transition: height 0.2s ease;
+        }
+
+        .sound-toggle-btn.active .sound-bar:nth-child(1) {
+            animation: soundBarDance 1.2s ease-in-out infinite alternate;
+        }
+        .sound-toggle-btn.active .sound-bar:nth-child(2) {
+            animation: soundBarDance 0.9s ease-in-out 0.2s infinite alternate;
+        }
+        .sound-toggle-btn.active .sound-bar:nth-child(3) {
+            animation: soundBarDance 1.4s ease-in-out 0.4s infinite alternate;
+        }
+        .sound-toggle-btn.active .sound-bar:nth-child(4) {
+            animation: soundBarDance 1.0s ease-in-out 0.1s infinite alternate;
+        }
+
+        @keyframes soundBarDance {
+            0% { height: 3px; }
+            50% { height: 12px; }
+            100% { height: 5px; }
+        }
+
+        /* Ambient audio hint toast */
+        .sound-hint {
+            position: fixed;
+            bottom: 24px;
+            right: 40px;
+            z-index: 25;
+            background: rgba(18, 14, 10, 0.8);
+            border: 1px solid rgba(255, 220, 180, 0.25);
+            border-radius: 24px;
+            padding: 8px 18px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #e8ded4;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .sound-hint.visible {
+            opacity: 0.95;
+            transform: translateY(0);
+        }
+
         .contact-btn {
             display: inline-flex;
             align-items: center;
@@ -514,6 +612,14 @@
                 right: 10px;
                 width: calc(100% - 20px);
             }
+            .sound-toggle-btn {
+                padding: 7px 12px;
+                margin-right: 8px;
+                font-size: 9px;
+            }
+            .sound-hint {
+                display: none;
+            }
             .cursor-inner, .cursor-outer {
                 display: none !important;
             }
@@ -534,6 +640,7 @@
       }
     }
     </script>
+
 </head>
 <body>
     <!-- Custom cursor -->
@@ -554,6 +661,15 @@
                 <a href="#slide-4" class="nav-link">Digital</a>
             </nav>
             <div class="header-actions">
+                <button class="sound-toggle-btn" id="sound-btn" aria-label="Toggle Royal Ambient Experience" title="Toggle Royal Ambient Audio">
+                    <span class="sound-waves">
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                        <span class="sound-bar"></span>
+                    </span>
+                    <span class="sound-state-text">SOUND: OFF</span>
+                </button>
                 <a href="#" class="contact-btn">Contact <span class="btn-circle"></span></a>
             </div>
         </header>
@@ -606,6 +722,9 @@
         </div>
     </div>
 
+    <!-- Ambient audio subtle hint -->
+    <div class="sound-hint" id="sound-hint">Royal Ambient Experience Available</div>
+
     <!-- Canvas -->
     <canvas id="webgl"></canvas>
 
@@ -614,6 +733,371 @@
         import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
         const ASSET_BASE_URL = "https://api.getlayers.ai/storage/v1/object/public/public/assets/laocoon-59f84455c6";
+
+        /* ==========================================================================
+           Royal Ambient Audio Engine (Web Audio API)
+           Generative, slow, majestic royal court soundscape:
+           - Double-bass & cello drone (D1, A1, D2 with slow breath modulation)
+           - Polyphonic orchestral string pad (Chords: Dm9 -> BbM7 -> Gm9 -> D Dorian)
+           - Antique royal harp / lyre plucks echoing in cathedral acoustics
+           - Molten bronze singing resonance & forge sparkle shimmer
+           - Dynamic interactive filter & stereo panning responding to scroll & mouse
+           ========================================================================== */
+        class RoyalAmbientEngine {
+            constructor() {
+                this.ctx = null;
+                this.isPlaying = false;
+                this.isInitialized = false;
+
+                this.masterGain = null;
+                this.reverbBus = null;
+                this.masterFilter = null;
+                this.stereoPanner = null;
+
+                // Drone
+                this.droneOscs = [];
+                this.droneGain = null;
+
+                // Pad chords
+                this.currentChordIndex = -1;
+                this.padVoices = [];
+                this.padGain = null;
+
+                // Royal chords matching narrative milestones:
+                // 0: Bronze and Time (D minor 9)
+                // 1: Marble Emotion (Bb major 7)
+                // 2: Liquid Metal (G minor 9)
+                // 3: Eternal Moment (D Dorian 9)
+                this.chords = [
+                    [73.42, 110.00, 174.61, 220.00, 261.63, 329.63],        // D2, A2, F3, A3, C4, E4
+                    [58.27, 87.31, 146.83, 220.00, 293.66, 349.23],         // Bb1, F2, D3, A3, D4, F4
+                    [49.00, 73.42, 116.54, 146.83, 196.00, 261.63],         // G1, D2, Bb2, D3, G3, C4
+                    [73.42, 110.00, 164.81, 196.00, 246.94, 293.66, 440.00]   // D2, A2, E3, G3, B3, D4, A4
+                ];
+
+                // Plucked royal harp scale (D Dorian notes)
+                this.harpScale = [146.83, 220.0, 293.66, 349.23, 440.0, 493.88, 523.25, 587.33, 659.25, 880.0];
+                this.harpTimer = null;
+
+                // Forge shimmer
+                this.shimmerOscs = [];
+                this.shimmerGain = null;
+            }
+
+            init() {
+                if (this.isInitialized) return;
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextClass) return;
+
+                this.ctx = new AudioContextClass();
+
+                // 1. Master Output Stage with Soft Limiting & Master Gain
+                const compressor = this.ctx.createDynamicsCompressor();
+                compressor.threshold.setValueAtTime(-18, this.ctx.currentTime);
+                compressor.knee.setValueAtTime(12, this.ctx.currentTime);
+                compressor.ratio.setValueAtTime(4, this.ctx.currentTime);
+                compressor.attack.setValueAtTime(0.003, this.ctx.currentTime);
+                compressor.release.setValueAtTime(0.25, this.ctx.currentTime);
+
+                this.masterGain = this.ctx.createGain();
+                this.masterGain.gain.setValueAtTime(0.0001, this.ctx.currentTime);
+
+                this.masterFilter = this.ctx.createBiquadFilter();
+                this.masterFilter.type = 'lowpass';
+                this.masterFilter.frequency.setValueAtTime(2200, this.ctx.currentTime);
+                this.masterFilter.Q.setValueAtTime(1.0, this.ctx.currentTime);
+
+                if (this.ctx.createStereoPanner) {
+                    this.stereoPanner = this.ctx.createStereoPanner();
+                    this.stereoPanner.pan.setValueAtTime(0, this.ctx.currentTime);
+                    this.masterFilter.connect(this.stereoPanner);
+                    this.stereoPanner.connect(compressor);
+                } else {
+                    this.masterFilter.connect(compressor);
+                }
+
+                compressor.connect(this.masterGain);
+                this.masterGain.connect(this.ctx.destination);
+
+                // 2. Grand Cathedral / Marble Hall Reverb (Multi-tap prime delay feedback network)
+                this.reverbBus = this.ctx.createGain();
+                this.reverbBus.gain.setValueAtTime(0.46, this.ctx.currentTime);
+
+                const delayTimes = [0.183, 0.297, 0.443, 0.619];
+                const feedbackGains = [0.42, 0.38, 0.34, 0.28];
+
+                delayTimes.forEach((dt, i) => {
+                    const delay = this.ctx.createDelay(1.5);
+                    delay.delayTime.setValueAtTime(dt, this.ctx.currentTime);
+
+                    const feedback = this.ctx.createGain();
+                    feedback.gain.setValueAtTime(feedbackGains[i], this.ctx.currentTime);
+
+                    const dampFilter = this.ctx.createBiquadFilter();
+                    dampFilter.type = 'lowpass';
+                    dampFilter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+
+                    this.reverbBus.connect(delay);
+                    delay.connect(dampFilter);
+                    dampFilter.connect(feedback);
+                    feedback.connect(delay);
+                    dampFilter.connect(this.masterFilter);
+                });
+
+                // 3. Drone Setup (Deep Royal Double-Bass & Cello)
+                this.droneGain = this.ctx.createGain();
+                this.droneGain.gain.setValueAtTime(0.26, this.ctx.currentTime);
+
+                const droneFilter = this.ctx.createBiquadFilter();
+                droneFilter.type = 'lowpass';
+                droneFilter.frequency.setValueAtTime(170, this.ctx.currentTime);
+                droneFilter.Q.setValueAtTime(1.8, this.ctx.currentTime);
+
+                const droneNotes = [
+                    { freq: 36.71, type: 'triangle', detune: 0 },
+                    { freq: 55.00, type: 'sawtooth', detune: -4 },
+                    { freq: 73.42, type: 'triangle', detune: 3 },
+                    { freq: 73.42, type: 'sawtooth', detune: -2 }
+                ];
+
+                droneNotes.forEach(cfg => {
+                    const osc = this.ctx.createOscillator();
+                    osc.type = cfg.type;
+                    osc.frequency.setValueAtTime(cfg.freq, this.ctx.currentTime);
+                    osc.detune.setValueAtTime(cfg.detune, this.ctx.currentTime);
+                    osc.connect(droneFilter);
+                    osc.start();
+                    this.droneOscs.push(osc);
+                });
+
+                // Slow breathing LFO on the cello filter
+                const droneLfo = this.ctx.createOscillator();
+                droneLfo.frequency.setValueAtTime(0.08, this.ctx.currentTime);
+                const droneLfoGain = this.ctx.createGain();
+                droneLfoGain.gain.setValueAtTime(35, this.ctx.currentTime);
+                droneLfo.connect(droneLfoGain);
+                droneLfoGain.connect(droneFilter.frequency);
+                droneLfo.start();
+
+                droneFilter.connect(this.droneGain);
+                this.droneGain.connect(this.masterFilter);
+                this.droneGain.connect(this.reverbBus);
+
+                // 4. Strings Pad Setup (Warm Polyphonic Chords)
+                this.padGain = this.ctx.createGain();
+                this.padGain.gain.setValueAtTime(0.22, this.ctx.currentTime);
+                this.padGain.connect(this.masterFilter);
+                this.padGain.connect(this.reverbBus);
+
+                // 5. Forge Shimmer Setup (Molten Bronze Ethereal Resonance)
+                this.shimmerGain = this.ctx.createGain();
+                this.shimmerGain.gain.setValueAtTime(0.012, this.ctx.currentTime);
+
+                const shimmerFreqs = [1174.66, 1760.00, 2349.32];
+                shimmerFreqs.forEach(freq => {
+                    const osc = this.ctx.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                    osc.connect(this.shimmerGain);
+                    osc.start();
+                    this.shimmerOscs.push(osc);
+                });
+
+                this.shimmerGain.connect(this.reverbBus);
+
+                // Initialize starting chord
+                this.setChord(0, 3.5);
+
+                // Begin scheduled harp plucks
+                this.scheduleNextPluck();
+
+                this.isInitialized = true;
+            }
+
+            setChord(index, fadeDuration = 3.5) {
+                if (!this.ctx || !this.padGain) return;
+                if (index === this.currentChordIndex) return;
+                this.currentChordIndex = index;
+                const chord = this.chords[index % this.chords.length];
+                const now = this.ctx.currentTime;
+
+                // Smoothly fade out previous voices
+                this.padVoices.forEach(voice => {
+                    voice.gain.gain.cancelScheduledValues(now);
+                    voice.gain.gain.setValueAtTime(voice.gain.gain.value, now);
+                    voice.gain.gain.linearRampToValueAtTime(0.0001, now + fadeDuration);
+                    setTimeout(() => {
+                        try {
+                            voice.oscs.forEach(o => o.stop());
+                        } catch(e) {}
+                    }, (fadeDuration + 0.5) * 1000);
+                });
+                this.padVoices = [];
+
+                // Instantiate new chord voices with detuned string pairs
+                const baseVoiceGain = (1.0 / chord.length) * 0.88;
+                chord.forEach((freq) => {
+                    const voiceGainNode = this.ctx.createGain();
+                    voiceGainNode.gain.setValueAtTime(0.0001, now);
+                    voiceGainNode.gain.linearRampToValueAtTime(baseVoiceGain, now + fadeDuration);
+
+                    const voiceFilter = this.ctx.createBiquadFilter();
+                    voiceFilter.type = 'lowpass';
+                    voiceFilter.frequency.setValueAtTime(Math.min(freq * 3.5, 1800), now);
+                    voiceFilter.Q.setValueAtTime(1.2, now);
+
+                    const osc1 = this.ctx.createOscillator();
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.setValueAtTime(freq, now);
+                    osc1.detune.setValueAtTime(-6, now);
+
+                    const osc2 = this.ctx.createOscillator();
+                    osc2.type = 'triangle';
+                    osc2.frequency.setValueAtTime(freq, now);
+                    osc2.detune.setValueAtTime(6, now);
+
+                    osc1.connect(voiceFilter);
+                    osc2.connect(voiceFilter);
+                    voiceFilter.connect(voiceGainNode);
+                    voiceGainNode.connect(this.padGain);
+
+                    osc1.start();
+                    osc2.start();
+
+                    this.padVoices.push({
+                        gain: voiceGainNode,
+                        oscs: [osc1, osc2]
+                    });
+                });
+            }
+
+            scheduleNextPluck() {
+                if (!this.ctx) return;
+                const delay = 2400 + Math.random() * 2600;
+                this.harpTimer = setTimeout(() => {
+                    if (this.isPlaying && this.ctx.state === 'running') {
+                        this.playHarpNote();
+                    }
+                    this.scheduleNextPluck();
+                }, delay);
+            }
+
+            playHarpNote() {
+                if (!this.ctx || !this.reverbBus) return;
+                const freq = this.harpScale[Math.floor(Math.random() * this.harpScale.length)];
+                const now = this.ctx.currentTime;
+
+                const osc = this.ctx.createOscillator();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now);
+
+                const oscOvertone = this.ctx.createOscillator();
+                oscOvertone.type = 'sine';
+                oscOvertone.frequency.setValueAtTime(freq * 2, now);
+
+                const noteGain = this.ctx.createGain();
+                noteGain.gain.setValueAtTime(0.0001, now);
+                noteGain.gain.linearRampToValueAtTime(0.18, now + 0.008);
+                noteGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+
+                const noteFilter = this.ctx.createBiquadFilter();
+                noteFilter.type = 'lowpass';
+                noteFilter.frequency.setValueAtTime(freq * 4.5, now);
+                noteFilter.frequency.exponentialRampToValueAtTime(freq * 0.8, now + 2.2);
+
+                let panner = null;
+                if (this.ctx.createStereoPanner) {
+                    panner = this.ctx.createStereoPanner();
+                    panner.pan.setValueAtTime((Math.random() - 0.5) * 1.2, now);
+                }
+
+                osc.connect(noteFilter);
+                oscOvertone.connect(noteFilter);
+                noteFilter.connect(noteGain);
+
+                if (panner) {
+                    noteGain.connect(panner);
+                    panner.connect(this.masterFilter);
+                    panner.connect(this.reverbBus);
+                } else {
+                    noteGain.connect(this.masterFilter);
+                    noteGain.connect(this.reverbBus);
+                }
+
+                osc.start(now);
+                oscOvertone.start(now);
+                osc.stop(now + 3.0);
+                oscOvertone.stop(now + 3.0);
+            }
+
+            play() {
+                if (!this.isInitialized) this.init();
+                if (!this.ctx) return;
+
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+
+                const now = this.ctx.currentTime;
+                this.masterGain.gain.cancelScheduledValues(now);
+                this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+                this.masterGain.gain.linearRampToValueAtTime(0.85, now + 2.5);
+                this.isPlaying = true;
+            }
+
+            pause() {
+                if (!this.ctx || !this.masterGain) return;
+                const now = this.ctx.currentTime;
+                this.masterGain.gain.cancelScheduledValues(now);
+                this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
+                this.masterGain.gain.linearRampToValueAtTime(0.0001, now + 1.2);
+                this.isPlaying = false;
+            }
+
+            toggle() {
+                if (this.isPlaying) {
+                    this.pause();
+                    return false;
+                } else {
+                    this.play();
+                    return true;
+                }
+            }
+
+            update(scroll, scrollVelocity, mouseX) {
+                if (!this.ctx || !this.isPlaying) return;
+                const now = this.ctx.currentTime;
+
+                // Dynamic chord progression tied to visual story milestones
+                let targetChord = 0;
+                if (scroll < 0.22) {
+                    targetChord = 0; // Bronze and Time (D minor 9)
+                } else if (scroll < 0.50) {
+                    targetChord = 1; // Marble Emotion (Bb major 7)
+                } else if (scroll < 0.78) {
+                    targetChord = 2; // Liquid Metal (G minor 9)
+                } else {
+                    targetChord = 3; // Eternal Moment (D Dorian 9)
+                }
+
+                if (targetChord !== this.currentChordIndex) {
+                    this.setChord(targetChord, 3.5);
+                }
+
+                // Master lowpass filter dynamically opens up with scroll velocity & depth
+                if (this.masterFilter) {
+                    const targetFreq = 1800 + scrollVelocity * 3800 + scroll * 400;
+                    this.masterFilter.frequency.setTargetAtTime(Math.min(targetFreq, 6000), now, 0.2);
+                }
+
+                // Stereo pan softly mirrors mouse movement
+                if (this.stereoPanner) {
+                    this.stereoPanner.pan.setTargetAtTime(mouseX * 0.25, now, 0.2);
+                }
+            }
+        }
+
+        const royalAudio = new RoyalAmbientEngine();
 
         const canvas = document.querySelector('#webgl');
         let scene, camera, renderer;
@@ -1143,6 +1627,13 @@
 
             updateSlides(currentScroll);
             updateGridDots(currentScroll);
+
+            // Update royal ambient audio harmonics and acoustics
+            if (royalAudio) {
+                const scrollVelocity = Math.abs(targetScroll - currentScroll);
+                royalAudio.update(currentScroll, scrollVelocity, mouseX);
+            }
+
             renderer.render(scene, camera);
         }
 
@@ -1211,6 +1702,7 @@
 
             // Navigation & window sync
             setupNavigation();
+            setupSoundControls();
             onWindowResize();
 
             // Trigger initial slide activation
@@ -1219,6 +1711,50 @@
 
             // Start animation loop
             animate();
+        }
+
+        // Setup sound toggle and initial ambient gesture handlers
+        function setupSoundControls() {
+            const soundBtn = document.getElementById('sound-btn');
+            const soundText = soundBtn ? soundBtn.querySelector('.sound-state-text') : null;
+            const soundHint = document.getElementById('sound-hint');
+
+            if (soundBtn) {
+                soundBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isNowPlaying = royalAudio.toggle();
+                    soundBtn.classList.toggle('active', isNowPlaying);
+                    if (soundText) {
+                        soundText.textContent = isNowPlaying ? 'SOUND: ON' : 'SOUND: OFF';
+                    }
+                    if (soundHint) {
+                        soundHint.classList.remove('visible');
+                    }
+                });
+            }
+
+            // Show subtle royal audio hint after brief delay
+            if (soundHint) {
+                setTimeout(() => {
+                    if (!royalAudio.isPlaying) {
+                        soundHint.classList.add('visible');
+                        setTimeout(() => {
+                            soundHint.classList.remove('visible');
+                        }, 5000);
+                    }
+                }, 2000);
+            }
+
+            // Unlock AudioContext on first user interaction for zero latency
+            const unlockAudio = () => {
+                if (royalAudio && !royalAudio.isInitialized) {
+                    royalAudio.init();
+                }
+                window.removeEventListener('pointerdown', unlockAudio);
+                window.removeEventListener('keydown', unlockAudio);
+            };
+            window.addEventListener('pointerdown', unlockAudio, { once: true });
+            window.addEventListener('keydown', unlockAudio, { once: true });
         }
 
         if (document.readyState === 'loading') {
